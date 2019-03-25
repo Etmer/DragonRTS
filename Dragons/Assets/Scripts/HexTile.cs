@@ -11,8 +11,10 @@ public class HexTile
     public readonly Vector3 _highlightedPosition;
     private float _width;
     private HexStates _currentState;
-    private Color _highLightColor = Color.red;
+    private Color _highLightColor = Color.green;
     private Color _defaultColor = Color.white;
+    private Color _selectedColor = Color.cyan;
+    private Color _currentColor;
 
     public int _q;
     public int _r;
@@ -31,6 +33,17 @@ public class HexTile
         _highlightedPosition = _defaultPosition + Vector3.up / 5;
     }
 
+    public void Highlight(bool state)
+    {
+        if (state)
+        {
+            ChangeState(HexStates.Highlighted);
+        }
+        else if(!state && CurrentState != HexStates.Selected)
+        {
+            ChangeState(HexStates.Idle);
+        }
+    }
     public void Select(bool state)
     {
         if (state)
@@ -59,7 +72,7 @@ public class HexTile
     {
         if (state)
         {
-            _renderer.material.color = _highLightColor;
+            _renderer.material.color = _currentColor;
         }
         else
         {
@@ -74,19 +87,59 @@ public class HexTile
             return;
         }
 
-        switch (_currentState)
+        switch (desiredState)
         {
-            case HexStates.Idle: // from Idle to Selected
-                Lift(true);
-                ChangeColor(true);
-                _currentState = desiredState;
+            case HexStates.Idle:
+                if (_currentState == HexStates.Highlighted)
+                {
+                    Lift(false);
+                    ChangeColor(false);
+                    _currentState = desiredState;
+                    break;
+                }
                 break;
-            case HexStates.Selected: // from Selected to Idle
-                Lift(false);
-                ChangeColor(false);
-                _currentState = desiredState;
+            case HexStates.Highlighted:
+                if (_currentState == HexStates.Idle)
+                {
+                    _currentColor = _highLightColor;
+                    Lift(true);
+                    ChangeColor(true);
+                    _currentState = desiredState;
+                    break;
+                }
+                if (_currentState == HexStates.Selected)
+                {
+                    break;
+                }
+                break;
+            case HexStates.Selected:
+                if (_currentState == HexStates.Idle)
+                {
+                    Lift(true);
+                    _currentState = desiredState;
+                    break;
+                }
+                else if (_currentState == HexStates.Highlighted)
+                {
+                    _currentColor = _selectedColor;
+                    ChangeColor(true);
+                    _currentState = desiredState;
+                    break;
+                }
+                break;
+            case HexStates.Deselected:
+                if (_currentState == HexStates.Selected)
+                {
+                    Lift(false);
+                    ChangeColor(false);
+                    _currentState = desiredState;
+                    break;
+                }
                 break;
         }
+
     }
+
+    public HexStates CurrentState { get { return _currentState; } }
 
 }

@@ -5,5 +5,7 @@ using UnityEngine;
 public enum HexStates
 {
     Idle,
+    Highlighted,
     Selected,
+    Deselected
 }

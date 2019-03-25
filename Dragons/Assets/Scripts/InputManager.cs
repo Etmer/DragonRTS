@@ -9,13 +9,16 @@ public class InputManager : MonoBehaviour
     [SerializeField] private TileData _data;
     [SerializeField] private MapGenerator _generator;
     private HexPoint _currentHexPoint;
+
+    private HexPoint _currentSelectedHexPoint;
+    private bool _hexSelected;
     
     public HexPoint[] hexPoints;
 
     private void Start()
     {
         _currentHexPoint = new HexPoint(0, 0);
-        _generator._map[_currentHexPoint].Select(true);
+        _generator._map[_currentHexPoint].Highlight(true);
     }
 
     void Update()
@@ -27,10 +30,14 @@ public class InputManager : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
+            _hexSelected = true;
+            _currentSelectedHexPoint = _currentHexPoint;
+            _generator._map[_currentHexPoint].Select(true);
+
             hexPoints = CoordinateSystem.CreateRings(_currentHexPoint, 4).ToArray();
             foreach (HexPoint p in hexPoints)
             {
-                _generator._map[p].Select(true);
+                _generator._map[p].Highlight(true);
             }
         }
     }
@@ -57,8 +64,8 @@ public class InputManager : MonoBehaviour
         {
             if (hex != _currentHexPoint)
             {
-                _generator._map[_currentHexPoint].Select(false);
-                _generator._map[hex].Select(true);
+                _generator._map[_currentHexPoint].Highlight(false);
+                _generator._map[hex].Highlight(true);
             }
             return hex;
         }
