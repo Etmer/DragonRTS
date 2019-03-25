@@ -9,15 +9,12 @@ public class InputManager : MonoBehaviour
     [SerializeField] private TileData _data;
     [SerializeField] private MapGenerator _generator;
     private HexPoint _currentHexPoint;
-
-    private bool clicked;
-    private HexPoint pointA;
-    private HexPoint pointB;
+    
     public HexPoint[] hexPoints;
 
     private void Start()
     {
-        _currentHexPoint = new HexPoint(0, 0,_data.meshSizeX);
+        _currentHexPoint = new HexPoint(0, 0);
         _generator._map[_currentHexPoint].Select(true);
     }
 
@@ -26,24 +23,14 @@ public class InputManager : MonoBehaviour
         _testTransform.position = CalculateWorldPosition();
 
         _currentHexPoint = GetCurrentHexPoint();
+        _testTransform.position += Vector3.up;
 
         if (Input.GetMouseButtonDown(0))
         {
-            if (!clicked)
+            hexPoints = CoordinateSystem.CreateRings(_currentHexPoint, 4).ToArray();
+            foreach (HexPoint p in hexPoints)
             {
-                pointA = _currentHexPoint;
-                pointA = pointA;
-                clicked = true;
-            }
-            else
-            {
-                pointB = _currentHexPoint;
-                hexPoints = CoordinateSystem.PointsBetweenHexPoints(pointA, pointB);
-                foreach (HexPoint p in hexPoints)
-                {
-                    _generator._map[p].Select(true);
-                    clicked = false;
-                }
+                _generator._map[p].Select(true);
             }
         }
     }
@@ -59,13 +46,12 @@ public class InputManager : MonoBehaviour
 
         Vector3 dirNorm = ray.direction / ray.direction.y;
         Vector3 IntersectionPos = ray.origin - dirNorm * delta;
-        //IntersectionPos.z = IntersectionPos.z * -1;
         return IntersectionPos;
     }
 
     private HexPoint GetCurrentHexPoint()
     {
-        HexPoint hex = CoordinateSystem.pixel_to_flat_hex(_testTransform.position, _data.meshSizeX);
+        HexPoint hex = CoordinateSystem.pixel_to_flat_hex(new Vector3(_testTransform.position.x,0,-_testTransform.position.z));
 
         if (_generator._map.ContainsKey(hex) && _generator._map.ContainsKey(_currentHexPoint))
         {
@@ -83,9 +69,13 @@ public class InputManager : MonoBehaviour
     {
         if (hexPoints != null)
         {
-            foreach (HexPoint p in hexPoints)
+            for (int p = 0; p < hexPoints.Length; p++)
             {
-                Gizmos.DrawWireSphere(CoordinateSystem.HexPointToPixel(p,p.width), 1);
+                if (p != 0)
+                {
+                    Gizmos.color = Color.red;
+                }
+                Gizmos.DrawWireSphere(CoordinateSystem.HexPointToPixel(hexPoints[p]), 1);
             }
         }
     }

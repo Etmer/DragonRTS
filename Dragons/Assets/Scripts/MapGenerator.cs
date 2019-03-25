@@ -16,7 +16,8 @@ public class MapGenerator : MonoBehaviour
 
     private void Start()
     {
-        HexPoint start = CoordinateSystem.pixel_to_flat_hex(Vector3.zero, _data.meshSizeX);
+        CoordinateSystem.width = _data.meshSizeX;
+        HexPoint start = CoordinateSystem.pixel_to_flat_hex(Vector3.zero);
         CreateMap(start, 20);
     }
     
@@ -38,7 +39,7 @@ public class MapGenerator : MonoBehaviour
     private void PlacePrefab(HexPoint hPoint)
     {
         int currentProbability = Random.Range(0, 100);
-        if (hPoint == new HexPoint(0, 0, hPoint.width) || _probability> currentProbability)
+        if (hPoint == new HexPoint(0, 0) || _probability> currentProbability)
         {
             _tile = Instantiate(_startPrefab, Vector3.zero, Quaternion.identity);
             _probability = 5;
@@ -48,8 +49,9 @@ public class MapGenerator : MonoBehaviour
             _probability += 1;
             _tile = Instantiate(_prefab, Vector3.zero, Quaternion.identity);
         }
-        _tile.transform.position = CoordinateSystem.HexPointToPixel(hPoint, hPoint.width);
-        HexTile tile = new HexTile(_tile, hPoint, hPoint.width);
+        _tile.transform.position = CoordinateSystem.HexPointToPixel(hPoint);
+        HexTile tile = new HexTile(_tile, hPoint, _data.meshSizeX);
+        _tile.GetComponent<DebugTile>().tile = hPoint;
         _map.Add(hPoint, tile);
     }
 }

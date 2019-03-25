@@ -4,11 +4,20 @@ using UnityEngine;
 
 public class CoordinateSystem 
 {
-    public static HexPoint pixel_to_flat_hex(Vector3 position, float width)
+    public static float width;
+
+    public static HexPoint pixel_to_flat_hex(Vector3 position)
     {
-        double q = (2.0f / 3 * position.x) / (width / 2);
-        double r = (-1.0f / 3 * position.x + Mathf.Sqrt(3) / 3 * position.z) / (width / 2);
-        return RoundToNearestHex(new HexPoint(q,r,width));
+        double q = ((2.0f / 3) * position.x) / (width / 2);
+        double r = (-(1.0f / 3) * position.x + (Mathf.Sqrt(3) / 3) * position.z) / (width / 2);
+        return RoundToNearestHex(new HexPoint(q,r));
+    }
+
+    public static Vector3 HexPointToPixel(HexPoint hPoint)
+    {
+        double x = (width / 2f) * ((3.0f / 2) * hPoint.q);
+        double z = (width / 2f) * (Mathf.Sqrt(3) / 2 * hPoint.q + Mathf.Sqrt(3) * hPoint.r);
+        return new Vector3((float)x, 0, (float)-z);
     }
 
     public static CubePoint AxialToCubePoint(HexPoint hex)
@@ -16,14 +25,14 @@ public class CoordinateSystem
         double x = hex.q;
         double z = hex.r;
         double y = -x -z;
-        return new CubePoint(x,y,z,hex.width);
+        return new CubePoint(x,y,z);
     }
 
     public static HexPoint CubeToAxialPoint(CubePoint cube)
     {
         double q = cube.x;
         double r = cube.z;
-        return new HexPoint(q,r,cube.width);
+        return new HexPoint(q,r);
     }
 
     public static CubePoint RoundToNearestCube(CubePoint cube)
@@ -51,7 +60,7 @@ public class CoordinateSystem
         float x = rx;
         float y = ry;
         float z = rz;
-        return new CubePoint(x,y,z,cube.width);
+        return new CubePoint(x,y,z);
     }
 
     public static HexPoint RoundToNearestHex(HexPoint point)
@@ -59,55 +68,47 @@ public class CoordinateSystem
         return CubeToAxialPoint(RoundToNearestCube(AxialToCubePoint(point)));
     }
 
-    public static Vector3 HexPointToPixel(HexPoint hPoint, float hexWidth)
-    {
-        double x = (hexWidth / 2f) * (3.0f / 2 * hPoint.q);
-        double z = (hexWidth / 2f) * (Mathf.Sqrt(3) / 2 * hPoint.q + Mathf.Sqrt(3) * hPoint.r);
-        return new Vector3((float)x, 0, (float)z);
-    }
-
     public static List<HexPoint> CreateRings(HexPoint start, int radius)
     {
         List<HexPoint> result = new List<HexPoint>();
-
-        HexPoint newNeighbour = GetNeighbour(start, 4);
-        newNeighbour = Scale(newNeighbour, radius);
+        
+        HexPoint newNeighbour = start + Direction(4) * radius;
 
         for (int i = 0; i < 6; i++)
         {
             for (int d = 0; d < radius; d++)
             {
-                newNeighbour = GetNeighbour(newNeighbour, i);
                 result.Add(newNeighbour);
+                newNeighbour = newNeighbour + Direction(i);
             }
         }
         return result;
     }
-    
+
     public static HexPoint Scale(HexPoint point, int scale)
     {
-        double q = point.q * scale;
-        double r = point.r * scale;
+        point.q *= scale;
+        point.r *= scale;
 
-        return new HexPoint(q,r, point.width);
+        return point;
     }
 
-    public static HexPoint GetNeighbour(HexPoint hex, int index)
+    public static HexPoint Direction(int index)
     {
         switch (index)
         {
             case 0:
-                return new HexPoint(hex.q + 1, hex.r + 0, hex.width);
+                return new HexPoint( + 1, + 0);
             case 1:
-                return new HexPoint(hex.q + 1, hex.r - 1, hex.width);
+                return new HexPoint( + 1, - 1);
             case 2:
-                return new HexPoint(hex.q + 0, hex.r - 1, hex.width);
+                return new HexPoint( + 0, - 1);
             case 3:
-                return new HexPoint(hex.q - 1, hex.r + 0, hex.width);
+                return new HexPoint( - 1, + 0);
             case 4:
-                return new HexPoint(hex.q - 1, hex.r + 1, hex.width);
+                return new HexPoint( - 1, + 1);
             case 5:
-                return new HexPoint(hex.q + 0, hex.r + 1, hex.width);
+                return new HexPoint( + 0, + 1);
             default:
                 throw new System.Exception();
         }
@@ -133,7 +134,7 @@ public class CoordinateSystem
             }
             else
             {
-                hexPoint = RoundToNearestHex(hexPoint + new HexPoint(0.5f,0.5f,hexPoint.width));
+                hexPoint = RoundToNearestHex(hexPoint + new HexPoint(0.5f,0.5f));
                 points.Add(hexPoint);
             }
         }
@@ -147,7 +148,7 @@ public class CoordinateSystem
         double y = a.y + (b.y - a.y) * step;
         double z = a.z + (b.z - a.z) * step;
 
-        return new CubePoint(x,y,z,a.width);
+        return new CubePoint(x,y,z);
     }
 
     private static double HexDistance(HexPoint a, HexPoint b)
@@ -168,15 +169,13 @@ public class CoordinateSystem
 [System.Serializable]
 public struct HexPoint
 {
-    public HexPoint(double _q, double _r, float _width)
+    public HexPoint(double _q, double _r)
     {
         q = _q;
         r = _r;
-        width = _width;
     }
-    public readonly double q;
-    public readonly double r;
-    public readonly float width;
+    public double q;
+    public double r;
 
     public static bool operator ==(HexPoint lhs, HexPoint rhs)
     {
@@ -190,50 +189,44 @@ public struct HexPoint
     {
         double q = lhs.q + rhs.q;
         double r = lhs.r + rhs.r;
-        float width = lhs.width;
 
-        return new HexPoint(q,r,width);
+        return new HexPoint(q,r);
     }
     public static HexPoint operator -(HexPoint lhs, HexPoint rhs)
     {
         double q = lhs.q - rhs.q;
         double r = lhs.r - rhs.r;
-        float width = lhs.width;
 
-        return new HexPoint(q, r, width);
+        return new HexPoint(q, r);
     }
 
     public static HexPoint operator *(HexPoint lhs, int rhs)
     {
         double q = lhs.q * rhs;
         double r = lhs.r * rhs;
-        float width = lhs.width;
 
-        return new HexPoint(q, r, width);
+        return new HexPoint(q, r);
     }
     public static HexPoint operator *(int lhs, HexPoint rhs)
     {
         double q = lhs * rhs.q;
         double r = lhs * rhs.q;
-        float width = rhs.width;
 
-        return new HexPoint(q, r, width);
+        return new HexPoint(q, r);
     }
     public static HexPoint operator *(HexPoint lhs, double rhs)
     {
         double q = lhs.q * rhs;
         double r = lhs.r * rhs;
-        float width = lhs.width;
 
-        return new HexPoint(q, r, width);
+        return new HexPoint(q, r);
     }
     public static HexPoint operator *(double lhs, HexPoint rhs)
     {
         double q = lhs * rhs.q;
         double r = lhs * rhs.q;
-        float width = rhs.width;
 
-        return new HexPoint(q, r, width);
+        return new HexPoint(q, r);
     }
 
 }
@@ -244,14 +237,12 @@ public struct CubePoint
     public double x;
     public double y;
     public double z;
-    public float width;
 
-    public CubePoint(double _x, double _y, double _z, float _width)
+    public CubePoint(double _x, double _y, double _z)
     {
         x = _x;
         y = _y;
         z = _z;
-        width = _width;
     }
 
 
@@ -260,18 +251,16 @@ public struct CubePoint
         double x = lhs.x + rhs.x;
         double y = lhs.y + rhs.y;
         double z = lhs.z + rhs.z;
-        float width = lhs.width;
 
-        return new CubePoint(x, y, z, width);
+        return new CubePoint(x, y, z);
     }
     public static CubePoint operator -(CubePoint lhs, CubePoint rhs)
     {
         double x = lhs.x - rhs.x;
         double y = lhs.y - rhs.y;
         double z = lhs.z - rhs.z;
-        float width = lhs.width;
 
-        return new CubePoint(x, y, z, width);
+        return new CubePoint(x, y, z);
     }
 
     public static bool operator ==(CubePoint lhs, CubePoint rhs)
@@ -288,35 +277,31 @@ public struct CubePoint
         double x = lhs.x * rhs;
         double y = lhs.y * rhs;
         double z = lhs.z * rhs;
-        float width = lhs.width;
 
-        return new CubePoint(x, y, z, width);
+        return new CubePoint(x, y, z);
     }
     public static CubePoint operator *(int lhs, CubePoint rhs)
     {
         double x = lhs * rhs.x;
         double y = lhs * rhs.y;
         double z = lhs * rhs.z;
-        float width = rhs.width;
 
-        return new CubePoint(x, y, z, width);
+        return new CubePoint(x, y, z);
     }
     public static CubePoint operator *(CubePoint lhs, double rhs)
     {
         double x = lhs.x * rhs;
         double y = lhs.y * rhs;
         double z = lhs.z * rhs;
-        float width = lhs.width;
 
-        return new CubePoint(x, y, z, width);
+        return new CubePoint(x, y, z);
     }
     public static CubePoint operator *(double lhs, CubePoint rhs)
     {
         double x = lhs * rhs.x;
         double y = lhs * rhs.y;
         double z = lhs * rhs.z;
-        float width = rhs.width;
 
-        return new CubePoint(x, y, z, width);
+        return new CubePoint(x, y, z);
     }
 }
