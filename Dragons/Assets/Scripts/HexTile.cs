@@ -13,7 +13,7 @@ public class HexTile
     private HexStates _currentState;
     private Color _highLightColor = Color.green;
     private Color _defaultColor = Color.white;
-    private Color _selectedColor = Color.cyan;
+    private Color _selectedColor = Color.red;
     private Color _currentColor;
 
     public int _q;
@@ -30,7 +30,7 @@ public class HexTile
         _worldtransform = worldObject.transform;
         _defaultPosition = _worldtransform.position;
         _renderer = worldObject.GetComponentInChildren<MeshRenderer>();
-        _highlightedPosition = _defaultPosition + Vector3.up / 5;
+        _highlightedPosition = _defaultPosition + Vector3.up;
     }
 
     public void Highlight(bool state)
@@ -52,7 +52,7 @@ public class HexTile
         }
         else
         {
-            ChangeState(HexStates.Idle);
+            ChangeState(HexStates.Deselected);
         }
     }
 
@@ -90,7 +90,7 @@ public class HexTile
         switch (desiredState)
         {
             case HexStates.Idle:
-                if (_currentState == HexStates.Highlighted)
+                if (_currentState == HexStates.Highlighted || _currentState == HexStates.Deselected)
                 {
                     Lift(false);
                     ChangeColor(false);
@@ -116,6 +116,8 @@ public class HexTile
                 if (_currentState == HexStates.Idle)
                 {
                     Lift(true);
+                    _currentColor = _selectedColor;
+                    ChangeColor(true);
                     _currentState = desiredState;
                     break;
                 }
@@ -133,6 +135,7 @@ public class HexTile
                     Lift(false);
                     ChangeColor(false);
                     _currentState = desiredState;
+                    ChangeState(HexStates.Idle);
                     break;
                 }
                 break;

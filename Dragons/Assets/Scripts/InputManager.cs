@@ -9,11 +9,12 @@ public class InputManager : MonoBehaviour
     [SerializeField] private TileData _data;
     [SerializeField] private MapGenerator _generator;
     private HexPoint _currentHexPoint;
+    public HexPoint[] _line = new HexPoint[0];
 
     private HexPoint _currentSelectedHexPoint;
     private bool _hexSelected;
     
-    public HexPoint[] hexPoints;
+    public HexPoint[] hexPoints = new HexPoint[0];
 
     private void Start()
     {
@@ -26,19 +27,54 @@ public class InputManager : MonoBehaviour
         _testTransform.position = CalculateWorldPosition();
 
         _currentHexPoint = GetCurrentHexPoint();
+        
         _testTransform.position += Vector3.up;
 
         if (Input.GetMouseButtonDown(0))
         {
-            _hexSelected = true;
+            _hexSelected = !_hexSelected;
+
             _currentSelectedHexPoint = _currentHexPoint;
             _generator._map[_currentHexPoint].Select(true);
+            DeleteRange();
+        }
+    }
+    private void DeleteRange()
+    {
+        foreach (HexPoint p in hexPoints)
+        {
+            _generator._map[p].Select(false);
+        }
+    }
+        private void RefreshLine(HexPoint a, HexPoint b)
+    {
+        foreach (HexPoint p in _line)
+        {
+            _generator._map[p].Highlight(false);
+        }
 
-            hexPoints = CoordinateSystem.CreateRings(_currentHexPoint, 4).ToArray();
-            foreach (HexPoint p in hexPoints)
+        _line = CoordinateSystem.PointsBetweenHexPoints(a,b);
+
+        if (a != b)
+        {
+            foreach (HexPoint p in _line)
             {
                 _generator._map[p].Highlight(true);
             }
+        }
+    }
+    private void RefreshRange(HexPoint center)
+    {
+        foreach (HexPoint p in hexPoints)
+        {
+            _generator._map[p].Select(false);
+        }
+
+        hexPoints = CoordinateSystem.CreateRings(center, 4).ToArray();
+        
+        foreach (HexPoint p in hexPoints)
+        {
+            _generator._map[p].Select(true);
         }
     }
 
@@ -64,10 +100,19 @@ public class InputManager : MonoBehaviour
         {
             if (hex != _currentHexPoint)
             {
-                _generator._map[_currentHexPoint].Highlight(false);
-                _generator._map[hex].Highlight(true);
+                if (!_hexSelected)
+                {
+                    _generator._map[_currentHexPoint].Highlight(false);
+                    _generator._map[hex].Highlight(true);
+                    RefreshRange(hex);
+                }
+                else
+                {
+                    RefreshLine(_currentSelectedHexPoint, hex);
+                }
+
             }
-            return hex;
+            return hex; 
         }
         return _currentHexPoint;
     }
