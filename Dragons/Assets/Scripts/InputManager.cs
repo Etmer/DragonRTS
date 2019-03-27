@@ -19,7 +19,7 @@ public class InputManager : MonoBehaviour
     private void Start()
     {
         _currentHexPoint = new HexPoint(0, 0);
-        _generator._map[_currentHexPoint].Highlight(true);
+        GlobalGameManager.instance.Map[_currentHexPoint].Highlight(true);
     }
 
     void Update()
@@ -35,7 +35,7 @@ public class InputManager : MonoBehaviour
             _hexSelected = !_hexSelected;
 
             _currentSelectedHexPoint = _currentHexPoint;
-            _generator._map[_currentHexPoint].Select(true);
+            GlobalGameManager.instance.Map[_currentHexPoint].Select(true);
             DeleteRange();
         }
     }
@@ -43,14 +43,15 @@ public class InputManager : MonoBehaviour
     {
         foreach (HexPoint p in hexPoints)
         {
-            _generator._map[p].Select(false);
+            GlobalGameManager.instance.Map[p].Select(false);
         }
     }
         private void RefreshLine(HexPoint a, HexPoint b)
     {
         foreach (HexPoint p in _line)
         {
-            _generator._map[p].Highlight(false);
+            if(GlobalGameManager.instance.Map.ContainsKey(p))
+                GlobalGameManager.instance.Map[p].Highlight(false);
         }
 
         _line = CoordinateSystem.PointsBetweenHexPoints(a,b);
@@ -59,7 +60,7 @@ public class InputManager : MonoBehaviour
         {
             foreach (HexPoint p in _line)
             {
-                _generator._map[p].Highlight(true);
+                GlobalGameManager.instance.Map[p].Highlight(true);
             }
         }
     }
@@ -67,14 +68,14 @@ public class InputManager : MonoBehaviour
     {
         foreach (HexPoint p in hexPoints)
         {
-            _generator._map[p].Select(false);
+            GlobalGameManager.instance.Map[p].Select(false);
         }
 
         hexPoints = CoordinateSystem.CreateRings(center, 4).ToArray();
         
         foreach (HexPoint p in hexPoints)
         {
-            _generator._map[p].Select(true);
+            GlobalGameManager.instance.Map[p].Select(true);
         }
     }
 
@@ -96,15 +97,22 @@ public class InputManager : MonoBehaviour
     {
         HexPoint hex = CoordinateSystem.pixel_to_flat_hex(new Vector3(_testTransform.position.x,0,-_testTransform.position.z));
 
-        if (_generator._map.ContainsKey(hex) && _generator._map.ContainsKey(_currentHexPoint))
+        if (GlobalGameManager.instance.Map.ContainsKey(hex) && GlobalGameManager.instance.Map.ContainsKey(_currentHexPoint))
         {
             if (hex != _currentHexPoint)
             {
                 if (!_hexSelected)
                 {
-                    _generator._map[_currentHexPoint].Highlight(false);
-                    _generator._map[hex].Highlight(true);
-                    RefreshRange(hex);
+                    GlobalGameManager.instance.Map[_currentHexPoint].Highlight(false);
+                    GlobalGameManager.instance.Map[hex].Highlight(true);
+                    if (GlobalGameManager.instance.Map[hex].tileType == TileType.Island)
+                    {
+                        RefreshRange(hex);
+                    }
+                    else
+                    {
+                        DeleteRange();
+                    }
                 }
                 else
                 {

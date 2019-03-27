@@ -9,3 +9,20 @@ public enum HexStates
     Selected,
     Deselected
 }
+
+public enum TileType
+{
+    Default,
+    Island,
+    Water
+}
+
+public enum GameStates
+{
+    Running,
+}
+
+public enum InputState
+{
+    Selected,
+}

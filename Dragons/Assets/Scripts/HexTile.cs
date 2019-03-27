@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class HexTile
 {
     [SerializeField] public Transform _worldtransform;
@@ -10,23 +11,33 @@ public class HexTile
     public readonly Vector3 _defaultPosition;
     public readonly Vector3 _highlightedPosition;
     private float _width;
-    private HexStates _currentState;
-    private Color _highLightColor = Color.green;
-    private Color _defaultColor = Color.white;
-    private Color _selectedColor = Color.red;
+    [SerializeField] public HexColorCoding _colorCoding;
     private Color _currentColor;
+    public HexStates _currentState;
+    public TileType tileType;
 
     public int _q;
     public int _r;
 
     private List<HexTile> _neigbours = new List<HexTile>();
 
-    public HexTile(GameObject worldObject, HexPoint point, float width)
+    public HexTile(HexTile tile ,GameObject worldObject)
     {
+        tileType = TileType.Default;
+        _currentState = HexStates.Idle;
+        _worldtransform = worldObject.transform;
+        _defaultPosition = _worldtransform.position;
+        _renderer = worldObject.GetComponentInChildren<MeshRenderer>();
+        _highlightedPosition = _defaultPosition + Vector3.up;
+        _colorCoding = tile._colorCoding;
+    }
+
+    public  HexTile(GameObject worldObject, HexPoint point)
+    {
+        tileType = TileType.Default;
         _currentState = HexStates.Idle;
         _q = (int)point.q;
         _r = (int)point.r;
-        _width = width;
         _worldtransform = worldObject.transform;
         _defaultPosition = _worldtransform.position;
         _renderer = worldObject.GetComponentInChildren<MeshRenderer>();
@@ -76,7 +87,7 @@ public class HexTile
         }
         else
         {
-            _renderer.material.color = _defaultColor;
+            _renderer.material.color = _colorCoding.defaultColor;
         }
     }
 
@@ -101,7 +112,7 @@ public class HexTile
             case HexStates.Highlighted:
                 if (_currentState == HexStates.Idle)
                 {
-                    _currentColor = _highLightColor;
+                    _currentColor = _colorCoding.highLightColor;
                     Lift(true);
                     ChangeColor(true);
                     _currentState = desiredState;
@@ -116,14 +127,14 @@ public class HexTile
                 if (_currentState == HexStates.Idle)
                 {
                     Lift(true);
-                    _currentColor = _selectedColor;
+                    _currentColor = _colorCoding.selectedColor;
                     ChangeColor(true);
                     _currentState = desiredState;
                     break;
                 }
                 else if (_currentState == HexStates.Highlighted)
                 {
-                    _currentColor = _selectedColor;
+                    _currentColor = _colorCoding.selectedColor;
                     ChangeColor(true);
                     _currentState = desiredState;
                     break;
