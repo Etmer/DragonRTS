@@ -56,7 +56,7 @@ public class MapGenerator : MonoBehaviour
             tile = new WaterTile(_tile, hPoint);
             tile._colorCoding = _tileFactory.defaultWaterTile._colorCoding;
         }
-        _tile.GetComponent<DebugTile>().tile = hPoint;
+
         GlobalGameManager.instance.Map.Add(hPoint, tile);
     }
 }

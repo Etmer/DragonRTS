@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 170076734}
-  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -337,8 +337,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data: {fileID: 11400000, guid: 62012fa4466612e4fb5e7248ce3512b6, type: 2}
-  _prefab: {fileID: 1211979100, guid: 457f015a32e9c8a4e991bb15c3e6d35a, type: 3}
-  _startPrefab: {fileID: 1665607535, guid: a992ec517c8a26a4a8e4ca4f3bfeaa8c, type: 3}
+  _prefab: {fileID: 100000, guid: 88bbc1871ac66fb499d7a3bafee606b6, type: 3}
+  _startPrefab: {fileID: 100000, guid: 88bbc1871ac66fb499d7a3bafee606b6, type: 3}
   _tile: {fileID: 0}
   _tileFactory:
     defaultWaterTile:
