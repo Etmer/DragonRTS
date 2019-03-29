@@ -21,18 +21,18 @@ public class HexTile
 
     private List<HexTile> _neigbours = new List<HexTile>();
 
-    public HexTile(HexTile tile ,GameObject worldObject)
+    public HexTile(HexTile tile ,GameObject worldObject, TileData data)
     {
         tileType = TileType.Default;
         _currentState = HexStates.Idle;
         _worldtransform = worldObject.transform;
         _defaultPosition = _worldtransform.position;
         _renderer = worldObject.GetComponentInChildren<MeshRenderer>();
-        _highlightedPosition = _defaultPosition + Vector3.up;
+        _highlightedPosition = _defaultPosition + Vector3.up * data.meshSizeY;
         _colorCoding = tile._colorCoding;
     }
 
-    public  HexTile(GameObject worldObject, HexPoint point)
+    public  HexTile(GameObject worldObject, HexPoint point, TileData data)
     {
         tileType = TileType.Default;
         _currentState = HexStates.Idle;
@@ -41,7 +41,7 @@ public class HexTile
         _worldtransform = worldObject.transform;
         _defaultPosition = _worldtransform.position;
         _renderer = worldObject.GetComponentInChildren<MeshRenderer>();
-        _highlightedPosition = _defaultPosition + Vector3.up;
+        _highlightedPosition = _defaultPosition + Vector3.up * data.meshSizeY;
     }
 
     public void Highlight(bool state)

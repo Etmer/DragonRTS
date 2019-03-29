@@ -8,4 +8,5 @@ public class TileData : ScriptableObject
     [SerializeField] private Mesh _tileDefaultMesh;
     public float meshSizeX { get { return _tileDefaultMesh.bounds.size.x; } }
     public float meshSizeZ { get { return _tileDefaultMesh.bounds.size.z; } }
+    public float meshSizeY { get { return _tileDefaultMesh.bounds.size.y; } }
 }

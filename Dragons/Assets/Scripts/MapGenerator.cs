@@ -44,7 +44,7 @@ public class MapGenerator : MonoBehaviour
         {
             _tile = Instantiate(_startPrefab, Vector3.zero, Quaternion.identity);
             _tile.transform.position = CoordinateSystem.HexPointToPixel(hPoint);
-            tile = new IslandTile(_tile,hPoint);
+            tile = new IslandTile(_tile,hPoint, _data);
             tile._colorCoding = _tileFactory.defaultIslandTile._colorCoding;
             _probability = 5;
         }
@@ -53,7 +53,7 @@ public class MapGenerator : MonoBehaviour
             _probability += 1;
             _tile = Instantiate(_prefab, Vector3.zero, Quaternion.identity);
             _tile.transform.position = CoordinateSystem.HexPointToPixel(hPoint);
-            tile = new WaterTile(_tile, hPoint);
+            tile = new WaterTile(_tile, hPoint, _data);
             tile._colorCoding = _tileFactory.defaultWaterTile._colorCoding;
         }
 

@@ -5,7 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public class IslandTile : HexTile
 {
-    public IslandTile(GameObject worldObject, HexPoint point) : base(worldObject, point)
+    public IslandTile(GameObject worldObject, HexPoint point, TileData data) : base(worldObject, point, data)
     {
         tileType = TileType.Island;
     }

@@ -337,8 +337,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data: {fileID: 11400000, guid: 62012fa4466612e4fb5e7248ce3512b6, type: 2}
-  _prefab: {fileID: 100000, guid: 88bbc1871ac66fb499d7a3bafee606b6, type: 3}
-  _startPrefab: {fileID: 100000, guid: 88bbc1871ac66fb499d7a3bafee606b6, type: 3}
+  _prefab: {fileID: 4935300075083319343, guid: 91040d607458772488377b9cc25c0f04, type: 3}
+  _startPrefab: {fileID: 2158353921248683359, guid: 77b21905088f398419f78a717997b23c,
+    type: 3}
   _tile: {fileID: 0}
   _tileFactory:
     defaultWaterTile:
