@@ -12,7 +12,12 @@ public class InputManager : MonoBehaviour
     public HexPoint[] _line = new HexPoint[0];
 
     private HexPoint _currentSelectedHexPoint;
+    public Transform Debug1;
+    public Transform Debug2;
     private bool _hexSelected;
+
+    Vector3 minXY;
+    Vector3 maxXY;
     
     public HexPoint[] hexPoints = new HexPoint[0];
 
@@ -27,13 +32,22 @@ public class InputManager : MonoBehaviour
         _testTransform.position = CalculateWorldPosition();
 
         _currentHexPoint = GetCurrentHexPoint();
-        
+
+        maxXY = WorldRect(new Vector3(0,0,0));
+        minXY = WorldRect(new Vector3(Screen.width, Screen.height, 0));
+
+        HexPoint min = CoordinateSystem.pixel_to_flat_hex(new Vector3(minXY.x,0,-minXY.z));
+
+        HexPoint max = CoordinateSystem.pixel_to_flat_hex(new Vector3(maxXY.x, 0, -maxXY.z));
+
+        GlobalGameManager.instance.Map[min].Highlight(true);
+        GlobalGameManager.instance.Map[max].Highlight(true);
         _testTransform.position += Vector3.up;
 
         if (Input.GetMouseButtonDown(0))
         {
             _hexSelected = !_hexSelected;
-
+            Debug.Log(_currentHexPoint.q + " / " + _currentHexPoint.r);
             _currentSelectedHexPoint = _currentHexPoint;
             GlobalGameManager.instance.Map[_currentHexPoint].Select(true);
             DeleteRange();
@@ -86,6 +100,15 @@ public class InputManager : MonoBehaviour
         _mousePosition.z = 10;
 
         Ray ray = Camera.main.ScreenPointToRay(_mousePosition);
+        float delta = ray.origin.y - Vector3.zero.y;
+
+        Vector3 dirNorm = ray.direction / ray.direction.y;
+        Vector3 IntersectionPos = ray.origin - dirNorm * delta;
+        return IntersectionPos;
+    }
+    private Vector3 WorldRect(Vector3 point)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(point);
         float delta = ray.origin.y - Vector3.zero.y;
 
         Vector3 dirNorm = ray.direction / ray.direction.y;

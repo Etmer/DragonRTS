@@ -11,6 +11,7 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private GameObject _startPrefab;
     [SerializeField] private GameObject _tile;
     [SerializeField] private TileFactory _tileFactory;
+    public Camera cam;
 
     private int _probability = 3;
 
@@ -32,11 +33,17 @@ public class MapGenerator : MonoBehaviour
 
         foreach (HexPoint h in results)
         {
-            PlacePrefab(h);
+           Transform t = PlacePrefab(h);
+
+            if (h.q == 0 && h.r == 0)
+            {
+                cam.transform.position = t.position + Vector3.forward * 5 + Vector3.up * 5 ;
+                cam.transform.LookAt(t);
+            }
         }
     }
 
-    private void PlacePrefab(HexPoint hPoint)
+    private Transform PlacePrefab(HexPoint hPoint)
     {
         int currentProbability = Random.Range(0, 100);
         HexTile tile = null;
@@ -58,5 +65,6 @@ public class MapGenerator : MonoBehaviour
         }
 
         GlobalGameManager.instance.Map.Add(hPoint, tile);
+        return _tile.transform;
     }
 }
