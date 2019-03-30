@@ -6,6 +6,13 @@ public class CoordinateSystem
 {
     public static float width;
 
+    public static bool isInitialized = false;
+
+    public static bool PointIsOnMap(HexPoint point)
+    {
+        return GlobalGameManager.instance.Map.ContainsKey(point);
+    }
+
     public static HexPoint pixel_to_flat_hex(Vector3 position)
     {
         float q = ((2.0f / 3) * position.x) / (width / 2);
@@ -13,11 +20,17 @@ public class CoordinateSystem
         return RoundToNearestHex(new HexPoint(q,r));
     }
 
-    public static Vector3 HexPointToPixel(HexPoint hPoint)
+    public static Vector3 HexPointToWorldCoordinate(HexPoint hPoint)
     {
         float x = (width / 2f) * ((3.0f / 2) * hPoint.q);
         float z = (width / 2f) * (Mathf.Sqrt(3) / 2 * hPoint.q + Mathf.Sqrt(3) * hPoint.r);
         return new Vector3((float)x, 0, (float)-z);
+    }
+    public static Vector2 HexPointToScreenPixel(HexPoint hPoint)
+    {
+        float x = (width / 2f) * ((3.0f / 2) * hPoint.q);
+        float y = (width / 2f) * (Mathf.Sqrt(3) / 2 * hPoint.q + Mathf.Sqrt(3) * hPoint.r);
+        return new Vector2(x,y);
     }
 
     public static CubePoint AxialToCubePoint(HexPoint hex)
@@ -68,7 +81,7 @@ public class CoordinateSystem
         return CubeToAxialPoint(RoundToNearestCube(AxialToCubePoint(point)));
     }
 
-    public static List<HexPoint> CreateRings(HexPoint start, int radius)
+    public static HexPoint[] CreateRings(HexPoint start, int radius)
     {
         List<HexPoint> result = new List<HexPoint>();
         
@@ -78,11 +91,14 @@ public class CoordinateSystem
         {
             for (int d = 0; d < radius; d++)
             {
-                result.Add(newNeighbour);
+                if (PointIsOnMap(newNeighbour) || !isInitialized)
+                {
+                    result.Add(newNeighbour);
+                }
                 newNeighbour = newNeighbour + Direction(i);
             }
         }
-        return result;
+        return result.ToArray();
     }
 
     public static HexPoint Scale(HexPoint point, int scale)
@@ -121,20 +137,26 @@ public class CoordinateSystem
 
         List<HexPoint> points = new List<HexPoint>();
         
-        float N = CubeDistance(ah,bh);
+        int N = Mathf.RoundToInt(CubeDistance(ah,bh));
 
-        for (int i = 0; i <=Mathf.RoundToInt(N); i++)
+        for (int i = 0; i <= N; i++)
         {
             CubePoint cubePoint = CubeLerp(ah, bh, 1.0f / N * i);
             HexPoint hexPoint = CubeToAxialPoint(RoundToNearestCube(cubePoint));
             if (!points.Contains(hexPoint))
             {
-                points.Add(hexPoint);
+                if (PointIsOnMap(hexPoint))
+                {
+                    points.Add(hexPoint);
+                }
             }
             else
             {
                 hexPoint = CubeToAxialPoint(RoundToNearestCube(cubePoint - new CubePoint(1 * 0.2f, 2 * 0.2f, -3 * 0.2f)));
-                points.Add(hexPoint);
+                if (PointIsOnMap(hexPoint))
+                {
+                    points.Add(hexPoint);
+                }
             }
         }
         return points.ToArray();

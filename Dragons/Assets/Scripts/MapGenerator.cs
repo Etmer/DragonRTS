@@ -12,16 +12,32 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private GameObject _tile;
     [SerializeField] private TileFactory _tileFactory;
     public Camera cam;
+    [SerializeField] private Rect ScreenRect;
 
     private int _probability = 3;
 
+    Vector3 min;
+    Vector3 max;
+
+    HexPoint[] leftArray = new HexPoint[0];
+    HexPoint[] rigthArray = new HexPoint[0];
+    HexPoint[] topArray = new HexPoint[0];
+    HexPoint[] bottomArray = new HexPoint[0];
+
     private void Start()
     {
+        min = CalculateWorldPosition(Vector3.zero);
+        max = CalculateWorldPosition(new Vector3(Screen.width, Screen.height, 0));
+
         CoordinateSystem.width = _data.meshSizeX;
         HexPoint start = CoordinateSystem.pixel_to_flat_hex(Vector3.zero);
         CreateMap(start, 20);
+        CoordinateSystem.isInitialized = true;
     }
-    
+    private void Update()
+    {
+    }
+
     private void CreateMap(HexPoint start, int radius)
     {
         List<HexPoint> results = new List<HexPoint> { start };
@@ -41,6 +57,7 @@ public class MapGenerator : MonoBehaviour
                 cam.transform.LookAt(t);
             }
         }
+        Debug.Log(string.Format("TileCount: {0}",results.Count));
     }
 
     private Transform PlacePrefab(HexPoint hPoint)
@@ -50,7 +67,7 @@ public class MapGenerator : MonoBehaviour
         if (hPoint == new HexPoint(0, 0) || _probability> currentProbability)
         {
             _tile = Instantiate(_startPrefab, Vector3.zero, Quaternion.identity);
-            _tile.transform.position = CoordinateSystem.HexPointToPixel(hPoint);
+            _tile.transform.position = CoordinateSystem.HexPointToWorldCoordinate(hPoint);
             tile = new IslandTile(_tile,hPoint, _data);
             tile._colorCoding = _tileFactory.defaultIslandTile._colorCoding;
             _probability = 5;
@@ -59,12 +76,37 @@ public class MapGenerator : MonoBehaviour
         {
             _probability += 1;
             _tile = Instantiate(_prefab, Vector3.zero, Quaternion.identity);
-            _tile.transform.position = CoordinateSystem.HexPointToPixel(hPoint);
+            _tile.transform.position = CoordinateSystem.HexPointToWorldCoordinate(hPoint);
             tile = new WaterTile(_tile, hPoint, _data);
             tile._colorCoding = _tileFactory.defaultWaterTile._colorCoding;
+        }
+        if (!InRect(_tile.transform.position))
+        {
+            _tile.SetActive(false);
         }
 
         GlobalGameManager.instance.Map.Add(hPoint, tile);
         return _tile.transform;
     }
+
+    private Vector3 CalculateWorldPosition(Vector3 point)
+    {
+        point.z = 10;
+
+        Ray ray = Camera.main.ScreenPointToRay(point);
+        float delta = ray.origin.y - Vector3.zero.y;
+
+        Vector3 dirNorm = ray.direction / ray.direction.y;
+        Vector3 IntersectionPos = ray.origin - dirNorm * delta;
+        return IntersectionPos;
+    }
+
+    private bool InRect(Vector3 position)
+    {
+        ScreenRect = new Rect(min.x -200, min.z -200, Screen.width +400, Screen.height+400);
+        Vector3 screenPos = cam.WorldToScreenPoint(position);
+        return ScreenRect.Contains(screenPos);
+    }
+
+  
 }

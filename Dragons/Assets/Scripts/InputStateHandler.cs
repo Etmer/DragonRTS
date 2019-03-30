@@ -4,30 +4,46 @@ using UnityEngine;
 
 public class InputStateHandler : MonoBehaviour
 {
-    private HexPoint[] _oldLine = new HexPoint[0];
-    private HexPoint[] _newLine = new HexPoint[0];
 
-    public void DrawLine(HexPoint a, HexPoint b)
+    public static void DrawLine(HexPoint a, HexPoint b, ref HexPoint[] output)
     {
-        _newLine = CoordinateSystem.PointsBetweenHexPoints(a, b);
-        foreach (HexPoint p in _newLine)
+        output = CoordinateSystem.PointsBetweenHexPoints(a, b);
+        foreach (HexPoint p in output)
         {
             if (GlobalGameManager.instance.Map[p].CurrentState != HexStates.Highlighted)
             {
                 GlobalGameManager.instance.Map[p].Highlight(true);
             }
         }
-        DeleteLine(_oldLine);
     }
-
-    public void DeleteLine(HexPoint[] line)
+    public static void DeleteLine(ref HexPoint[] line)
     {
         foreach (HexPoint p in line)
         {
-            if (GlobalGameManager.instance.Map[p].CurrentState != HexStates.Highlighted)
+            if (GlobalGameManager.instance.Map[p].CurrentState == HexStates.Highlighted)
             {
                 GlobalGameManager.instance.Map[p].Highlight(false);
             }
         }
     }
+
+    public static void CreateRange(HexPoint center, int rangeDistance,ref HexPoint[] range)
+    {
+        range = CoordinateSystem.CreateRings(center, rangeDistance);
+        foreach (HexPoint p in range)
+        {
+            if (GlobalGameManager.instance.Map[p].CurrentState != HexStates.Highlighted)
+            {
+                GlobalGameManager.instance.Map[p].Highlight(true);
+            }
+        }
+    }
+    public static void DeleteRange(ref HexPoint[] range)
+    {
+        foreach (HexPoint p in range)
+        {
+            GlobalGameManager.instance.Map[p].Highlight(false);
+        }
+    }
+
 }
