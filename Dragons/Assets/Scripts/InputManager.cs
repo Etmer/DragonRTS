@@ -18,6 +18,11 @@ public class InputManager : MonoBehaviour
 
     private HexPoint _currentSelectedHexPoint;
 
+    private HexPoint[] _currentLine = new HexPoint[0];
+
+    [SerializeField] private UnitManager _unitManager;
+    private bool _selected;
+
     private void Start()
     {
         _currentHexPoint = new HexPoint(0, 0);
@@ -43,8 +48,9 @@ public class InputManager : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             GlobalGameManager.instance.Map[_currentHexPoint].Highlight(false);
-            //InputStateHandler.DeleteLine();
-            //InputStateHandler.DeleteRange();
+            HexDrawTools.DeleteLine(ref _currentLine);
+            HexDrawTools.DeleteRange(ref _currentLine);
+            _currentSelectedHexPoint = _currentHexPoint;
             state = TestState.tres;
         }
         _testTransform.position = CalculateWorldPosition();
@@ -106,7 +112,16 @@ public class InputManager : MonoBehaviour
                 //InputStateHandler.RefreshRange(newPoint, 5);
                 break;
             case TestState.tres:
-                //InputStateHandler.RefreshLine(_currentSelectedHexPoint, newPoint);
+                if (!_selected)
+                {
+                    HexDrawTools.DeleteLine(ref _currentLine);
+                    HexDrawTools.DrawLine(_currentSelectedHexPoint, newPoint, ref _currentLine);
+                }
+                if (Input.GetMouseButtonDown(0))
+                {
+                    _selected = true;
+                    _unitManager.MoveUnit(null, _currentLine);
+                }
                 break;
         }
     }

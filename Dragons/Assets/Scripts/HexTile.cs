@@ -15,6 +15,7 @@ public class HexTile
     private Color _currentColor;
     public HexStates _currentState;
     public TileType tileType;
+    private Material _material;
 
     public int _q;
     public int _r;
@@ -28,6 +29,7 @@ public class HexTile
         _worldtransform = worldObject.transform;
         _defaultPosition = _worldtransform.position;
         _renderer = worldObject.GetComponentInChildren<MeshRenderer>();
+        _material = _renderer.material;
         _highlightedPosition = _defaultPosition + Vector3.up * data.meshSizeY;
         _colorCoding = tile._colorCoding;
     }
@@ -41,6 +43,7 @@ public class HexTile
         _worldtransform = worldObject.transform;
         _defaultPosition = _worldtransform.position;
         _renderer = worldObject.GetComponentInChildren<MeshRenderer>();
+        _material = _renderer.material;
         _highlightedPosition = _defaultPosition + Vector3.up * data.meshSizeY;
     }
 

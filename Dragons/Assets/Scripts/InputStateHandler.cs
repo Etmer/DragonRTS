@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InputStateHandler : MonoBehaviour
+public class HexDrawTools
 {
 
     public static void DrawLine(HexPoint a, HexPoint b, ref HexPoint[] output)

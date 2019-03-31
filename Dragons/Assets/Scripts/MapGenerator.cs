@@ -80,10 +80,6 @@ public class MapGenerator : MonoBehaviour
             tile = new WaterTile(_tile, hPoint, _data);
             tile._colorCoding = _tileFactory.defaultWaterTile._colorCoding;
         }
-        if (!InRect(_tile.transform.position))
-        {
-            _tile.SetActive(false);
-        }
 
         GlobalGameManager.instance.Map.Add(hPoint, tile);
         return _tile.transform;
