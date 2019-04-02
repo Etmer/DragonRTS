@@ -32,11 +32,8 @@ public class MapGenerator : MonoBehaviour
 
         CoordinateSystem.width = _data.meshSizeX;
         HexPoint start = CoordinateSystem.pixel_to_flat_hex(Vector3.zero);
-        CreateMap(start, 20);
+        CreateMap(start, 15);
         CoordinateSystem.isInitialized = true;
-    }
-    private void Update()
-    {
     }
 
     private void CreateMap(HexPoint start, int radius)

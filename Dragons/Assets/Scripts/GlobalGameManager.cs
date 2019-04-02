@@ -20,6 +20,18 @@ public class GlobalGameManager : MonoBehaviour
         return Map[layer];
     }
 
+    public int FindLayer(HexPoint point)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            if (Map[i].ContainsKey(point))
+            {
+                return i;
+            }
+        }
+        throw new System.Exception();
+    }
+
     private void Awake()
     {
         if (instance == null)

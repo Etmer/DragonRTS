@@ -71,6 +71,10 @@ public class InputManager : MonoBehaviour
 
         _currentHexPoint = GetCurrentHexPoint();
         Debug.Log(_currentHexPoint.q + " / " + _currentHexPoint.r);
+        if (Input.GetMouseButtonDown(0))
+        {
+
+        }
         
     }
 

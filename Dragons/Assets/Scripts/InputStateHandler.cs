@@ -10,9 +10,10 @@ public class HexDrawTools
         output = CoordinateSystem.PointsBetweenHexPoints(a, b);
         foreach (HexPoint p in output)
         {
-            if (GlobalGameManager.instance.GetMapLayer(CoordinateSystem.layer)[p].CurrentState != HexStates.Highlighted)
+            int layer = GlobalGameManager.instance.FindLayer(p);
+            if (GlobalGameManager.instance.GetMapLayer(layer)[p].CurrentState != HexStates.Highlighted)
             {
-                GlobalGameManager.instance.GetMapLayer(CoordinateSystem.layer)[p].Highlight(true);
+                GlobalGameManager.instance.GetMapLayer(layer)[p].Highlight(true);
             }
         }
     }
@@ -20,9 +21,10 @@ public class HexDrawTools
     {
         foreach (HexPoint p in line)
         {
-            if (GlobalGameManager.instance.GetMapLayer(CoordinateSystem.layer)[p].CurrentState == HexStates.Highlighted)
+            int layer = GlobalGameManager.instance.FindLayer(p);
+            if (GlobalGameManager.instance.GetMapLayer(layer)[p].CurrentState == HexStates.Highlighted)
             {
-                GlobalGameManager.instance.GetMapLayer(CoordinateSystem.layer)[p].Highlight(false);
+                GlobalGameManager.instance.GetMapLayer(layer)[p].Highlight(false);
             }
         }
     }
@@ -32,9 +34,10 @@ public class HexDrawTools
         range = CoordinateSystem.CreateRings(center, rangeDistance);
         foreach (HexPoint p in range)
         {
-            if (GlobalGameManager.instance.GetMapLayer(CoordinateSystem.layer)[p].CurrentState != HexStates.Highlighted)
+            int layer = GlobalGameManager.instance.FindLayer(p);
+            if (GlobalGameManager.instance.GetMapLayer(layer)[p].CurrentState != HexStates.Highlighted)
             {
-                GlobalGameManager.instance.GetMapLayer(CoordinateSystem.layer)[p].Highlight(true);
+                GlobalGameManager.instance.GetMapLayer(layer)[p].Highlight(true);
             }
         }
     }
@@ -42,7 +45,8 @@ public class HexDrawTools
     {
         foreach (HexPoint p in range)
         {
-            GlobalGameManager.instance.GetMapLayer(CoordinateSystem.layer)[p].Highlight(false);
+            int layer = GlobalGameManager.instance.FindLayer(p);
+            GlobalGameManager.instance.GetMapLayer(layer)[p].Highlight(false);
         }
     }
 

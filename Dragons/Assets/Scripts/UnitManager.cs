@@ -23,7 +23,7 @@ public class UnitManager : MonoBehaviour
 
             while (current.rotation != Quaternion.LookRotation(direction))
             {
-                current.rotation = Quaternion.RotateTowards(current.rotation, Quaternion.LookRotation(direction), 3f);
+                current.rotation = Quaternion.RotateTowards(current.rotation, Quaternion.LookRotation(direction), 100f * Time.deltaTime);
                 yield return null;
             }
             while (current.position != currentTarget)
