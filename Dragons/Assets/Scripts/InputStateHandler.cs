@@ -10,9 +10,9 @@ public class HexDrawTools
         output = CoordinateSystem.PointsBetweenHexPoints(a, b);
         foreach (HexPoint p in output)
         {
-            if (GlobalGameManager.instance.Map[p].CurrentState != HexStates.Highlighted)
+            if (GlobalGameManager.instance.GetMapLayer(CoordinateSystem.layer)[p].CurrentState != HexStates.Highlighted)
             {
-                GlobalGameManager.instance.Map[p].Highlight(true);
+                GlobalGameManager.instance.GetMapLayer(CoordinateSystem.layer)[p].Highlight(true);
             }
         }
     }
@@ -20,9 +20,9 @@ public class HexDrawTools
     {
         foreach (HexPoint p in line)
         {
-            if (GlobalGameManager.instance.Map[p].CurrentState == HexStates.Highlighted)
+            if (GlobalGameManager.instance.GetMapLayer(CoordinateSystem.layer)[p].CurrentState == HexStates.Highlighted)
             {
-                GlobalGameManager.instance.Map[p].Highlight(false);
+                GlobalGameManager.instance.GetMapLayer(CoordinateSystem.layer)[p].Highlight(false);
             }
         }
     }
@@ -32,9 +32,9 @@ public class HexDrawTools
         range = CoordinateSystem.CreateRings(center, rangeDistance);
         foreach (HexPoint p in range)
         {
-            if (GlobalGameManager.instance.Map[p].CurrentState != HexStates.Highlighted)
+            if (GlobalGameManager.instance.GetMapLayer(CoordinateSystem.layer)[p].CurrentState != HexStates.Highlighted)
             {
-                GlobalGameManager.instance.Map[p].Highlight(true);
+                GlobalGameManager.instance.GetMapLayer(CoordinateSystem.layer)[p].Highlight(true);
             }
         }
     }
@@ -42,7 +42,7 @@ public class HexDrawTools
     {
         foreach (HexPoint p in range)
         {
-            GlobalGameManager.instance.Map[p].Highlight(false);
+            GlobalGameManager.instance.GetMapLayer(CoordinateSystem.layer)[p].Highlight(false);
         }
     }
 

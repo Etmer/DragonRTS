@@ -4,5 +4,12 @@ using UnityEngine;
 
 public class DataModel 
 {
-    public Dictionary<HexPoint, HexTile> map = new Dictionary<HexPoint, HexTile>();
+    public List<Dictionary<HexPoint, HexTile>> map = new List<Dictionary<HexPoint, HexTile>>();
+
+    public DataModel()
+    {
+        map.Add(new Dictionary<HexPoint, HexTile>());
+        map.Add(new Dictionary<HexPoint, HexTile>());
+        map.Add(new Dictionary<HexPoint, HexTile>());
+    }
 }

@@ -4,13 +4,15 @@ using UnityEngine;
 
 public class CoordinateSystem 
 {
+    public static int layer;
+
     public static float width;
 
     public static bool isInitialized = false;
 
-    public static bool PointIsOnMap(HexPoint point)
+    public static bool PointIsOnLayer(HexPoint point)
     {
-        return GlobalGameManager.instance.Map.ContainsKey(point);
+        return GlobalGameManager.instance.Map[layer].ContainsKey(point);
     }
 
     public static HexPoint pixel_to_flat_hex(Vector3 position)
@@ -91,7 +93,7 @@ public class CoordinateSystem
         {
             for (int d = 0; d < radius; d++)
             {
-                if (PointIsOnMap(newNeighbour) || !isInitialized)
+                if (PointIsOnLayer(newNeighbour) || !isInitialized)
                 {
                     result.Add(newNeighbour);
                 }
@@ -145,7 +147,7 @@ public class CoordinateSystem
             HexPoint hexPoint = CubeToAxialPoint(RoundToNearestCube(cubePoint));
             if (!points.Contains(hexPoint))
             {
-                if (PointIsOnMap(hexPoint))
+                if (PointIsOnLayer(hexPoint))
                 {
                     points.Add(hexPoint);
                 }
@@ -153,7 +155,7 @@ public class CoordinateSystem
             else
             {
                 hexPoint = CubeToAxialPoint(RoundToNearestCube(cubePoint - new CubePoint(1 * 0.2f, 2 * 0.2f, -3 * 0.2f)));
-                if (PointIsOnMap(hexPoint))
+                if (PointIsOnLayer(hexPoint))
                 {
                     points.Add(hexPoint);
                 }

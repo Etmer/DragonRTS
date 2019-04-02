@@ -7,14 +7,15 @@ public class MapGenerator : MonoBehaviour
 {
     
     [SerializeField] private TileData _data;
-    [SerializeField] private GameObject _prefab;
-    [SerializeField] private GameObject _startPrefab;
+    [SerializeField] private GameObject _groundTile;
+    [SerializeField] private GameObject _midTile;
+    [SerializeField] private GameObject _highTile;
     [SerializeField] private GameObject _tile;
     [SerializeField] private TileFactory _tileFactory;
     public Camera cam;
     [SerializeField] private Rect ScreenRect;
 
-    private int _probability = 3;
+    private int _probability = 15;
 
     Vector3 min;
     Vector3 max;
@@ -64,24 +65,38 @@ public class MapGenerator : MonoBehaviour
     {
         int currentProbability = Random.Range(0, 100);
         HexTile tile = null;
-        if (hPoint == new HexPoint(0, 0) || _probability> currentProbability)
+        if ( _probability > currentProbability)
         {
-            _tile = Instantiate(_startPrefab, Vector3.zero, Quaternion.identity);
-            _tile.transform.position = CoordinateSystem.HexPointToWorldCoordinate(hPoint);
-            tile = new IslandTile(_tile,hPoint, _data);
-            tile._colorCoding = _tileFactory.defaultIslandTile._colorCoding;
+
+            if (_probability > 20)
+            {
+                _tile = Instantiate(_highTile, Vector3.zero, Quaternion.identity);
+                _tile.transform.position = CoordinateSystem.HexPointToWorldCoordinate(hPoint);
+                tile = new IslandTile(_tile, hPoint, _data);
+                tile._colorCoding = _tileFactory.defaultIslandTile._colorCoding;
+                GlobalGameManager.instance.AddToLayer(2, hPoint, tile);
+            }
+            else
+            {
+                _tile = Instantiate(_midTile, Vector3.zero, Quaternion.identity);
+                _tile.transform.position = CoordinateSystem.HexPointToWorldCoordinate(hPoint);
+                tile = new IslandTile(_tile, hPoint, _data);
+                tile._colorCoding = _tileFactory.defaultIslandTile._colorCoding;
+                GlobalGameManager.instance.AddToLayer(1, hPoint, tile);
+            }
             _probability = 5;
+
         }
         else
         {
             _probability += 1;
-            _tile = Instantiate(_prefab, Vector3.zero, Quaternion.identity);
+            _tile = Instantiate(_groundTile, Vector3.zero, Quaternion.identity);
             _tile.transform.position = CoordinateSystem.HexPointToWorldCoordinate(hPoint);
             tile = new WaterTile(_tile, hPoint, _data);
             tile._colorCoding = _tileFactory.defaultWaterTile._colorCoding;
+            GlobalGameManager.instance.AddToLayer(0, hPoint, tile);
         }
 
-        GlobalGameManager.instance.Map.Add(hPoint, tile);
         return _tile.transform;
     }
 
