@@ -9,14 +9,10 @@ public class CoordinateSystem
     public static float width;
 
     public static bool isInitialized = false;
-
-    public static bool PointIsOnLayer(HexPoint point)
-    {
-        return GlobalGameManager.instance.Map[layer].ContainsKey(point);
-    }
+    
     public static bool PointIsOnMap(HexPoint point)
     {
-        return GlobalGameManager.instance.Map[0].ContainsKey(point) || GlobalGameManager.instance.Map[1].ContainsKey(point) || GlobalGameManager.instance.Map[2].ContainsKey(point);
+        return GlobalGameManager.instance.Map.ContainsKey(point);
     }
 
     public static HexPoint pixel_to_flat_hex(Vector3 position)

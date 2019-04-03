@@ -1,16 +1,14 @@
 fileFormatVersion: 2
-guid: 962d528a9d5c9264994e15f0e90a1f5a
+guid: cea6b69f26759f5439682da506cc6b5d
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
-    100000: pCone6
-    100002: //RootNode
-    400000: pCone6
-    400002: //RootNode
-    2100000: initialShadingGroup
-    2300000: pCone6
-    3300000: pCone6
-    4300000: pCone6
+    100000: //RootNode
+    400000: //RootNode
+    2100000: No Name
+    2300000: //RootNode
+    3300000: //RootNode
+    4300000: Cone
   externalObjects: {}
   materials:
     importMaterials: 1

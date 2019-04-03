@@ -6,6 +6,7 @@ using UnityEngine;
 public class HexTile
 {
     [SerializeField] public Transform _worldtransform;
+    public Vector3 highestPoint;
     [SerializeField] public MeshRenderer _renderer;
 
     public readonly Vector3 _defaultPosition;

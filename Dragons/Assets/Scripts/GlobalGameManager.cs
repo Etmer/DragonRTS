@@ -8,30 +8,8 @@ public class GlobalGameManager : MonoBehaviour
 
     private DataModel _model;
 
-    public List<Dictionary<HexPoint, HexTile>> Map { get { return _model.map; } }
-
-    public void AddToLayer(int layer, HexPoint Key, HexTile Value)
-    {
-        Map[layer].Add(Key, Value);
-    }
-
-    public Dictionary<HexPoint, HexTile> GetMapLayer(int layer)
-    {
-        return Map[layer];
-    }
-
-    public int FindLayer(HexPoint point)
-    {
-        for (int i = 0; i < 3; i++)
-        {
-            if (Map[i].ContainsKey(point))
-            {
-                return i;
-            }
-        }
-        throw new System.Exception();
-    }
-
+    public Dictionary<HexPoint, HexTile> Map { get { return _model.map; } }
+   
     private void Awake()
     {
         if (instance == null)

@@ -34,46 +34,31 @@ public class InputManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetAxis("Mouse ScrollWheel") > 0)
-        {
-            CoordinateSystem.layer = (CoordinateSystem.layer + 1) % 3;
-        }
-        else if (Input.GetAxis("Mouse ScrollWheel") < 0)
-        {
-            CoordinateSystem.layer = (CoordinateSystem.layer - 1) % 3;
-            if (CoordinateSystem.layer < 0)
-            {
-                CoordinateSystem.layer = 0;
-            }
-        }
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            //InputStateHandler.DeleteLine();
-            //InputStateHandler.DeleteRange();
-            state = TestState.uno;
+            CoordinateSystem.layer = 0;
         }
-        else if(Input.GetKeyDown(KeyCode.Alpha2))
+        if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            GlobalGameManager.instance.GetMapLayer(CoordinateSystem.layer)[_currentHexPoint].Highlight(false);
-            //InputStateHandler.DeleteLine();
-            //InputStateHandler.DeleteRange();
-            state = TestState.dos;
+            CoordinateSystem.layer = 1;
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        else if(Input.GetKeyDown(KeyCode.Alpha3))
         {
-            GlobalGameManager.instance.GetMapLayer(CoordinateSystem.layer)[_currentHexPoint].Highlight(false);
-            HexDrawTools.DeleteLine(ref _currentLine);
-            HexDrawTools.DeleteRange(ref _currentLine);
-            _currentSelectedHexPoint = _currentHexPoint;
-            state = TestState.tres;
+            CoordinateSystem.layer = 2;
         }
-        _testTransform.position = CalculateWorldPosition(CoordinateSystem.layer);
 
-        _currentHexPoint = GetCurrentHexPoint();
-        Debug.Log(_currentHexPoint.q + " / " + _currentHexPoint.r);
+        if (Input.GetAxis("Mouse ScrollWheel") < 0)
+        {
+            Debug.Log("Scrolling");
+        }
+
+        Vector3 worlPos = CalculateWorldPosition(CoordinateSystem.layer);
+
+        _currentHexPoint = GetCurrentHexPoint(worlPos);
+
         if (Input.GetMouseButtonDown(0))
         {
-
+            _testTransform.position = _currentHexTile._defaultPosition;
         }
         
     }
@@ -114,10 +99,10 @@ public class InputManager : MonoBehaviour
         return IntersectionPos;
     }
 
-    private HexPoint GetCurrentHexPoint()
+    private HexPoint GetCurrentHexPoint(Vector3 worldPos)
     {
-        HexPoint hex = CoordinateSystem.pixel_to_flat_hex(new Vector3(_testTransform.position.x,0,-_testTransform.position.z));
-        if (CoordinateSystem.PointIsOnLayer(hex))
+        HexPoint hex = CoordinateSystem.pixel_to_flat_hex(new Vector3(worldPos.x,0,-worldPos.z));
+        if (CoordinateSystem.PointIsOnMap(hex))
         {
           ProcessState(state, hex);
           return hex;
@@ -136,7 +121,7 @@ public class InputManager : MonoBehaviour
                     {
                         _currentHexTile.Highlight(false);
                     }
-                    _currentHexTile = GlobalGameManager.instance.GetMapLayer(CoordinateSystem.layer)[newPoint];
+                    _currentHexTile = GlobalGameManager.instance.Map[newPoint];
                     if (_currentHexTile != null)
                     {
                         _currentHexTile.Highlight(true);

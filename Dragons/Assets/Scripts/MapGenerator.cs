@@ -71,7 +71,7 @@ public class MapGenerator : MonoBehaviour
                 _tile.transform.position = CoordinateSystem.HexPointToWorldCoordinate(hPoint);
                 tile = new IslandTile(_tile, hPoint, _data);
                 tile._colorCoding = _tileFactory.defaultIslandTile._colorCoding;
-                GlobalGameManager.instance.AddToLayer(2, hPoint, tile);
+                GlobalGameManager.instance.Map.Add(hPoint, tile);
             }
             else
             {
@@ -79,7 +79,7 @@ public class MapGenerator : MonoBehaviour
                 _tile.transform.position = CoordinateSystem.HexPointToWorldCoordinate(hPoint);
                 tile = new IslandTile(_tile, hPoint, _data);
                 tile._colorCoding = _tileFactory.defaultIslandTile._colorCoding;
-                GlobalGameManager.instance.AddToLayer(1, hPoint, tile);
+                GlobalGameManager.instance.Map.Add(hPoint, tile);
             }
             _probability = 5;
 
@@ -91,7 +91,7 @@ public class MapGenerator : MonoBehaviour
             _tile.transform.position = CoordinateSystem.HexPointToWorldCoordinate(hPoint);
             tile = new WaterTile(_tile, hPoint, _data);
             tile._colorCoding = _tileFactory.defaultWaterTile._colorCoding;
-            GlobalGameManager.instance.AddToLayer(0, hPoint, tile);
+            GlobalGameManager.instance.Map.Add(hPoint, tile);
         }
 
         return _tile.transform;

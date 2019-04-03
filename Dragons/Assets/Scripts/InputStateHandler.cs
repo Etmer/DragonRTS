@@ -10,10 +10,9 @@ public class HexDrawTools
         output = CoordinateSystem.PointsBetweenHexPoints(a, b);
         foreach (HexPoint p in output)
         {
-            int layer = GlobalGameManager.instance.FindLayer(p);
-            if (GlobalGameManager.instance.GetMapLayer(layer)[p].CurrentState != HexStates.Highlighted)
+            if (GlobalGameManager.instance.Map[p].CurrentState != HexStates.Highlighted)
             {
-                GlobalGameManager.instance.GetMapLayer(layer)[p].Highlight(true);
+                GlobalGameManager.instance.Map[p].Highlight(true);
             }
         }
     }
@@ -21,10 +20,9 @@ public class HexDrawTools
     {
         foreach (HexPoint p in line)
         {
-            int layer = GlobalGameManager.instance.FindLayer(p);
-            if (GlobalGameManager.instance.GetMapLayer(layer)[p].CurrentState == HexStates.Highlighted)
+            if (GlobalGameManager.instance.Map[p].CurrentState == HexStates.Highlighted)
             {
-                GlobalGameManager.instance.GetMapLayer(layer)[p].Highlight(false);
+                GlobalGameManager.instance.Map[p].Highlight(false);
             }
         }
     }
@@ -34,10 +32,9 @@ public class HexDrawTools
         range = CoordinateSystem.CreateRings(center, rangeDistance);
         foreach (HexPoint p in range)
         {
-            int layer = GlobalGameManager.instance.FindLayer(p);
-            if (GlobalGameManager.instance.GetMapLayer(layer)[p].CurrentState != HexStates.Highlighted)
+            if (GlobalGameManager.instance.Map[p].CurrentState != HexStates.Highlighted)
             {
-                GlobalGameManager.instance.GetMapLayer(layer)[p].Highlight(true);
+                GlobalGameManager.instance.Map[p].Highlight(true);
             }
         }
     }
@@ -45,8 +42,7 @@ public class HexDrawTools
     {
         foreach (HexPoint p in range)
         {
-            int layer = GlobalGameManager.instance.FindLayer(p);
-            GlobalGameManager.instance.GetMapLayer(layer)[p].Highlight(false);
+            GlobalGameManager.instance.Map[p].Highlight(false);
         }
     }
 
