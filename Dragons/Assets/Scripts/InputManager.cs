@@ -58,7 +58,7 @@ public class InputManager : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            _testTransform.position = _currentHexTile._defaultPosition;
+            _testTransform.position = _currentHexTile._highlightedPosition;
         }
         
     }

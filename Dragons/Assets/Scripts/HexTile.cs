@@ -31,7 +31,7 @@ public class HexTile
         _defaultPosition = _worldtransform.position;
         _renderer = worldObject.GetComponentInChildren<MeshRenderer>();
         _material = _renderer.material;
-        _highlightedPosition = _defaultPosition + Vector3.up * data.meshSizeY;
+        _highlightedPosition = _defaultPosition + Vector3.up * data.meshSizeY * 100;
         _colorCoding = tile._colorCoding;
     }
 
@@ -45,7 +45,7 @@ public class HexTile
         _defaultPosition = _worldtransform.position;
         _renderer = worldObject.GetComponentInChildren<MeshRenderer>();
         _material = _renderer.material;
-        _highlightedPosition = _defaultPosition + Vector3.up * data.meshSizeY;
+        _highlightedPosition = _defaultPosition + Vector3.up * data.meshSizeY * 100;
     }
 
     public void Highlight(bool state)

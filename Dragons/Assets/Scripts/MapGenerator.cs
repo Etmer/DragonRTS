@@ -6,12 +6,13 @@ using UnityEngine;
 public class MapGenerator : MonoBehaviour
 {
     
-    [SerializeField] private TileData _data;
+    [SerializeField] private TileContainer _tileContainer;
     [SerializeField] private GameObject _groundTile;
     [SerializeField] private GameObject _midTile;
     [SerializeField] private GameObject _highTile;
     [SerializeField] private GameObject _tile;
     [SerializeField] private TileFactory _tileFactory;
+    [SerializeField] private int _mapRadius;
     public Camera cam;
     [SerializeField] private Rect ScreenRect;
 
@@ -30,9 +31,9 @@ public class MapGenerator : MonoBehaviour
         min = CalculateWorldPosition(Vector3.zero);
         max = CalculateWorldPosition(new Vector3(Screen.width, Screen.height, 0));
 
-        CoordinateSystem.width = _data.meshSizeX;
+        CoordinateSystem.width = _tileContainer.Layer(WorldLayer.zero).meshSizeX * 100;
         HexPoint start = CoordinateSystem.pixel_to_flat_hex(Vector3.zero);
-        CreateMap(start, 15);
+        CreateMap(start, _mapRadius);
         CoordinateSystem.isInitialized = true;
     }
 
@@ -62,14 +63,15 @@ public class MapGenerator : MonoBehaviour
     {
         int currentProbability = Random.Range(0, 100);
         HexTile tile = null;
+        TileData data = null;
         if ( _probability > currentProbability)
         {
-
             if (_probability > 20)
             {
                 _tile = Instantiate(_highTile, Vector3.zero, Quaternion.identity);
                 _tile.transform.position = CoordinateSystem.HexPointToWorldCoordinate(hPoint);
-                tile = new IslandTile(_tile, hPoint, _data);
+                data = _tileContainer.Layer(WorldLayer.two);
+                tile = new IslandTile(_tile, hPoint, data);
                 tile._colorCoding = _tileFactory.defaultIslandTile._colorCoding;
                 GlobalGameManager.instance.Map.Add(hPoint, tile);
             }
@@ -77,7 +79,8 @@ public class MapGenerator : MonoBehaviour
             {
                 _tile = Instantiate(_midTile, Vector3.zero, Quaternion.identity);
                 _tile.transform.position = CoordinateSystem.HexPointToWorldCoordinate(hPoint);
-                tile = new IslandTile(_tile, hPoint, _data);
+                data = _tileContainer.Layer(WorldLayer.two);
+                tile = new IslandTile(_tile, hPoint, data);
                 tile._colorCoding = _tileFactory.defaultIslandTile._colorCoding;
                 GlobalGameManager.instance.Map.Add(hPoint, tile);
             }
@@ -89,7 +92,8 @@ public class MapGenerator : MonoBehaviour
             _probability += 1;
             _tile = Instantiate(_groundTile, Vector3.zero, Quaternion.identity);
             _tile.transform.position = CoordinateSystem.HexPointToWorldCoordinate(hPoint);
-            tile = new WaterTile(_tile, hPoint, _data);
+            data = _tileContainer.Layer(WorldLayer.zero);
+            tile = new WaterTile(_tile, hPoint, data);
             tile._colorCoding = _tileFactory.defaultWaterTile._colorCoding;
             GlobalGameManager.instance.Map.Add(hPoint, tile);
         }

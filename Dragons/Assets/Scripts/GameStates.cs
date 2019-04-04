@@ -26,3 +26,11 @@ public enum InputState
 {
     Selected,
 }
+
+public enum WorldLayer
+{
+    zero,
+    one, 
+    two,
+    three
+}
