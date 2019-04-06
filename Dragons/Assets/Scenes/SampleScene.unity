@@ -522,7 +522,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e95a5ebd92173c45bd792a410db446e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _data: {fileID: 11400000, guid: 62012fa4466612e4fb5e7248ce3512b6, type: 2}
+  _tileContainer: {fileID: 11400000, guid: 93cabc0770315c648bceb9443c5ef5cd, type: 2}
   _groundTile: {fileID: 100000, guid: 47ef577f34593ef45892737d532b28e2, type: 3}
   _midTile: {fileID: 100000, guid: 2eb5493850db9dc49a1451634ccb46fd, type: 3}
   _highTile: {fileID: 100000, guid: 95dc5d11ef2b6684293effae2ddd1772, type: 3}
@@ -546,6 +546,7 @@ MonoBehaviour:
       tileType: 0
       _q: 0
       _r: 0
+  _mapRadius: 5
   cam: {fileID: 534669904}
   ScreenRect:
     serializedVersion: 2

@@ -15,50 +15,50 @@ public class CoordinateSystem
         return GlobalGameManager.instance.Map.ContainsKey(point);
     }
 
-    public static HexPoint pixel_to_flat_hex(Vector3 position)
+    public static HexPoint pixel_to_flat_hex(Vector3 position, out HexPoint output)
     {
-        float q = ((2.0f / 3) * position.x) / (width / 2);
-        float r = (-(1.0f / 3) * position.x + (Mathf.Sqrt(3) / 3) * position.z) / (width / 2);
-        return RoundToNearestHex(new HexPoint(q,r));
+        output.q = ((2.0f / 3) * position.x) / (width / 2);
+        output.r = (-(1.0f / 3) * position.x + (Mathf.Sqrt(3) / 3) * position.z) / (width / 2);
+        return RoundToNearestHex(output);
     }
 
     public static Vector3 HexPointToWorldCoordinate(HexPoint hPoint)
     {
         float x = (width / 2f) * ((3.0f / 2) * hPoint.q);
         float z = (width / 2f) * (Mathf.Sqrt(3) / 2 * hPoint.q + Mathf.Sqrt(3) * hPoint.r);
-        return new Vector3((float)x, 0, (float)-z);
+        return new Vector3(x, 0, -z); ;
     }
-    public static Vector2 HexPointToScreenPixel(HexPoint hPoint)
+    public static Vector2 HexPointToScreenPixel(HexPoint hPoint, out Vector2 output)
     {
-        float x = (width / 2f) * ((3.0f / 2) * hPoint.q);
-        float y = (width / 2f) * (Mathf.Sqrt(3) / 2 * hPoint.q + Mathf.Sqrt(3) * hPoint.r);
-        return new Vector2(x,y);
-    }
-
-    public static CubePoint AxialToCubePoint(HexPoint hex)
-    {
-        float x = hex.q;
-        float z = hex.r;
-        float y = -x -z;
-        return new CubePoint(x,y,z);
+        output.x = (width / 2f) * ((3.0f / 2) * hPoint.q);
+        output.y = (width / 2f) * (Mathf.Sqrt(3) / 2 * hPoint.q + Mathf.Sqrt(3) * hPoint.r);
+        return output;
     }
 
-    public static HexPoint CubeToAxialPoint(CubePoint cube)
+    public static CubePoint AxialToCubePoint(HexPoint hex, out CubePoint output)
     {
-        float q = cube.x;
-        float r = cube.z;
-        return new HexPoint(q,r);
+        output.x = hex.q;
+        output.z = hex.r;
+        output.y = -output.x -output.z;
+        return output;
     }
 
-    public static CubePoint RoundToNearestCube(CubePoint cube)
+    public static HexPoint CubeToAxialPoint(CubePoint cube, out HexPoint output)
     {
-        int rx = Mathf.RoundToInt((float)cube.x);
-        int ry = Mathf.RoundToInt((float)cube.y);
-        int rz = Mathf.RoundToInt((float)cube.z);
+        output.q = cube.x;
+        output.r = cube.z;
+        return output;
+    }
 
-        float x_diff = Mathf.Abs((float)(rx - cube.x));
-        float y_diff = Mathf.Abs((float)(ry - cube.y));
-        float z_diff = Mathf.Abs((float)(rz - cube.z));
+    public static CubePoint RoundToNearestCube(ref CubePoint cube)
+    {
+        int rx = Mathf.RoundToInt(cube.x);
+        int ry = Mathf.RoundToInt(cube.y);
+        int rz = Mathf.RoundToInt(cube.z);
+
+        float x_diff = Mathf.Abs((rx - cube.x));
+        float y_diff = Mathf.Abs((ry - cube.y));
+        float z_diff = Mathf.Abs((rz - cube.z));
 
         if (x_diff > y_diff && x_diff > z_diff)
         {
@@ -72,15 +72,16 @@ public class CoordinateSystem
         {
             rz = -rx - ry;
         }
-        float x = rx;
-        float y = ry;
-        float z = rz;
-        return new CubePoint(x,y,z);
+        cube.x = rx;
+        cube.y = ry;
+        cube.z = rz;
+        return cube;
     }
 
     public static HexPoint RoundToNearestHex(HexPoint point)
     {
-        return CubeToAxialPoint(RoundToNearestCube(AxialToCubePoint(point)));
+        CubePoint cb = AxialToCubePoint(point, out cb);
+        return CubeToAxialPoint(RoundToNearestCube(ref cb), out point);
     }
 
     public static HexPoint[] CreateRings(HexPoint start, int radius)
@@ -134,8 +135,8 @@ public class CoordinateSystem
 
     public static HexPoint[] PointsBetweenHexPoints(HexPoint a, HexPoint b)
     {
-        CubePoint ah = AxialToCubePoint(a);
-        CubePoint bh = AxialToCubePoint(b);
+        CubePoint ah = AxialToCubePoint(a, out ah);
+        CubePoint bh = AxialToCubePoint(b, out bh); ;
 
         List<HexPoint> points = new List<HexPoint>();
         
@@ -144,7 +145,7 @@ public class CoordinateSystem
         for (int i = 0; i <= N; i++)
         {
             CubePoint cubePoint = CubeLerp(ah, bh, 1.0f / N * i);
-            HexPoint hexPoint = CubeToAxialPoint(RoundToNearestCube(cubePoint));
+            HexPoint hexPoint = CubeToAxialPoint(RoundToNearestCube(ref cubePoint),out hexPoint);
             if (!points.Contains(hexPoint))
             {
                 if (PointIsOnMap(hexPoint))
@@ -154,7 +155,8 @@ public class CoordinateSystem
             }
             else
             {
-                hexPoint = CubeToAxialPoint(RoundToNearestCube(cubePoint - new CubePoint(1 * 0.2f, 2 * 0.2f, -3 * 0.2f)));
+                cubePoint -= new CubePoint(1 * 0.2f, 2 * 0.2f, -3 * 0.2f);
+                hexPoint = CubeToAxialPoint(RoundToNearestCube(ref cubePoint),out hexPoint);
                 if (PointIsOnMap(hexPoint))
                 {
                     points.Add(hexPoint);
@@ -176,8 +178,8 @@ public class CoordinateSystem
 
     private static float HexDistance(HexPoint a, HexPoint b)
     {
-        CubePoint ac = AxialToCubePoint(a);
-        CubePoint bc = AxialToCubePoint(b);
+        CubePoint ac = AxialToCubePoint(a, out ac);
+        CubePoint bc = AxialToCubePoint(b, out ac);
 
         return CubeDistance(ac,bc);
     }

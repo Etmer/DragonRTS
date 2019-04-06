@@ -18,8 +18,11 @@ public class InputManager : MonoBehaviour
     [SerializeField] private Transform _testTransform;
     private HexPoint _currentHexPoint;
     private HexTile _currentHexTile;
-    private HexPoint _currentSelectedHexPoint;
+    private HexTile _lastHexTile;
 
+    private HexPoint _currentSelectedHexPoint;
+    [SerializeField] private Camera _cam;
+    [SerializeField] private Transform _camHolder;
     private HexPoint[] _currentLine = new HexPoint[0];
 
     [SerializeField] private UnitManager _unitManager;
@@ -29,38 +32,29 @@ public class InputManager : MonoBehaviour
     {
         _currentHexPoint = new HexPoint(0, 0);
         _currentHexTile = null;
+        state = TestState.uno;
 
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            CoordinateSystem.layer = 0;
+            state = TestState.tres;
         }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            CoordinateSystem.layer = 1;
-        }
-        else if(Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            CoordinateSystem.layer = 2;
-        }
+        MoveCamera();
+        ChangeCameraHeight();
+        ConvertWorldPositionToHexPosition();
+        ProcessMouseEvents();
 
-        if (Input.GetAxis("Mouse ScrollWheel") < 0)
-        {
-            Debug.Log("Scrolling");
-        }
+        ProcessState(state, _currentHexPoint);
+    }
 
+    private void ConvertWorldPositionToHexPosition()
+    {
         Vector3 worlPos = CalculateWorldPosition(CoordinateSystem.layer);
 
         _currentHexPoint = GetCurrentHexPoint(worlPos);
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            _testTransform.position = _currentHexTile._highlightedPosition;
-        }
-        
     }
 
     private Vector3 CalculateWorldPosition(int i)
@@ -89,47 +83,38 @@ public class InputManager : MonoBehaviour
         return IntersectionPos;
     }
 
-    private Vector3 WorldRect(Vector3 point)
-    {
-        Ray ray = Camera.main.ScreenPointToRay(point);
-        float delta = ray.origin.y - Vector3.zero.y;
-
-        Vector3 dirNorm = ray.direction / ray.direction.y;
-        Vector3 IntersectionPos = ray.origin - dirNorm * delta;
-        return IntersectionPos;
-    }
-
     private HexPoint GetCurrentHexPoint(Vector3 worldPos)
     {
-        HexPoint hex = CoordinateSystem.pixel_to_flat_hex(new Vector3(worldPos.x,0,-worldPos.z));
+        HexPoint hex = CoordinateSystem.pixel_to_flat_hex(new Vector3(worldPos.x,0,-worldPos.z), out hex);
         if (CoordinateSystem.PointIsOnMap(hex))
         {
-          ProcessState(state, hex);
-          return hex;
+            _currentHexTile = GlobalGameManager.instance.Map[hex];
+            return hex;
         }
         return _currentHexPoint;
     }
-
+    
     public void ProcessState(TestState state, HexPoint newPoint)
     {
         switch (state)
         {
             case TestState.uno:
-                if (newPoint != _currentHexPoint)
+                if (_lastHexTile != _currentHexTile)
                 {
-                    if (_currentHexTile != null)
+                    if (_lastHexTile != null)
                     {
-                        _currentHexTile.Highlight(false);
+                        _lastHexTile.Highlight(false);
                     }
-                    _currentHexTile = GlobalGameManager.instance.Map[newPoint];
                     if (_currentHexTile != null)
                     {
                         _currentHexTile.Highlight(true);
                     }
+                    _lastHexTile = _currentHexTile;
                 }
                 break;
             case TestState.dos:
-                //InputStateHandler.RefreshRange(newPoint, 5);
+                HexDrawTools.DeleteRange(ref _currentLine);
+                HexDrawTools.CreateRange(newPoint, 5,ref _currentLine);
                 break;
             case TestState.tres:
                 if (!_selected)
@@ -143,6 +128,58 @@ public class InputManager : MonoBehaviour
                     _unitManager.MoveUnit(null, _currentLine);
                 }
                 break;
+        }
+    }
+
+    private void MoveCamera()
+    {
+        if (Input.GetAxisRaw("Horizontal") != 0)
+        {
+            _camHolder.position += Vector3.left * Input.GetAxisRaw("Horizontal");
+        }
+        if (Input.GetAxisRaw("Vertical") != 0)
+        {
+            _camHolder.position += Vector3.back * Input.GetAxisRaw("Vertical");
+        }
+    }
+
+    private void ChangeCameraHeight()
+    {
+        Vector3 lookDirection = _cam.transform.rotation * Vector3.forward;
+
+        if (_camHolder.position.y <= 15)
+        {
+            if (Input.GetAxis("Mouse ScrollWheel") < 0)
+            {
+                _camHolder.position -= lookDirection;
+            }
+        }
+
+        if (_camHolder.position.y > 3)
+        {
+            if (Input.GetAxis("Mouse ScrollWheel") > 0)
+            {
+                _camHolder.position += lookDirection;
+            }
+        }
+
+        else
+        {
+            float yAxis = Mathf.Clamp(_camHolder.position.y, 3, 15);
+            _camHolder.position = new Vector3(_camHolder.position.x, yAxis, _camHolder.position.z);
+        }
+    }
+
+    private void ProcessMouseEvents()
+    {
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            _testTransform.position = _currentHexTile.highestPoint;
+        }
+        if (Input.GetMouseButtonDown(2))
+        {
+            Debug.Log("Wheel clicked");
         }
     }
 }

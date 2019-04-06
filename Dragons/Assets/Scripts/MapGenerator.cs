@@ -13,7 +13,7 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private GameObject _tile;
     [SerializeField] private TileFactory _tileFactory;
     [SerializeField] private int _mapRadius;
-    public Camera cam;
+    [SerializeField] private Transform cam;
     [SerializeField] private Rect ScreenRect;
 
     private int _probability = 15;
@@ -31,8 +31,8 @@ public class MapGenerator : MonoBehaviour
         min = CalculateWorldPosition(Vector3.zero);
         max = CalculateWorldPosition(new Vector3(Screen.width, Screen.height, 0));
 
-        CoordinateSystem.width = _tileContainer.Layer(WorldLayer.zero).meshSizeX * 100;
-        HexPoint start = CoordinateSystem.pixel_to_flat_hex(Vector3.zero);
+        CoordinateSystem.width = _tileContainer.Layer(WorldLayer.zero).meshSizeX;
+        HexPoint start = CoordinateSystem.pixel_to_flat_hex(Vector3.zero, out start);
         CreateMap(start, _mapRadius);
         CoordinateSystem.isInitialized = true;
     }
@@ -53,7 +53,7 @@ public class MapGenerator : MonoBehaviour
             if (h.q == 0 && h.r == 0)
             {
                 cam.transform.position = t.position + Vector3.forward * 5 + Vector3.up * 5 ;
-                cam.transform.LookAt(t);
+                Camera.main.transform.LookAt(t);
             }
         }
         Debug.Log(string.Format("TileCount: {0}",results.Count));
@@ -79,7 +79,7 @@ public class MapGenerator : MonoBehaviour
             {
                 _tile = Instantiate(_midTile, Vector3.zero, Quaternion.identity);
                 _tile.transform.position = CoordinateSystem.HexPointToWorldCoordinate(hPoint);
-                data = _tileContainer.Layer(WorldLayer.two);
+                data = _tileContainer.Layer(WorldLayer.one);
                 tile = new IslandTile(_tile, hPoint, data);
                 tile._colorCoding = _tileFactory.defaultIslandTile._colorCoding;
                 GlobalGameManager.instance.Map.Add(hPoint, tile);
@@ -116,7 +116,7 @@ public class MapGenerator : MonoBehaviour
     private bool InRect(Vector3 position)
     {
         ScreenRect = new Rect(min.x -200, min.z -200, Screen.width +400, Screen.height+400);
-        Vector3 screenPos = cam.WorldToScreenPoint(position);
+        Vector3 screenPos = Camera.main.WorldToScreenPoint(position);
         return ScreenRect.Contains(screenPos);
     }
 

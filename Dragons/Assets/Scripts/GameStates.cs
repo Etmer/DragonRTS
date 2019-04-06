@@ -32,5 +32,6 @@ public enum WorldLayer
     zero,
     one, 
     two,
-    three
+    three,
+    four
 }
