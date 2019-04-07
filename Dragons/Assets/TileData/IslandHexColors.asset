@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19a0692cf34235a48a9bba82deaaf73d, type: 3}
   m_Name: IslandHexColors
   m_EditorClassIdentifier: 
-  highLightColor: {r: 0.07609467, g: 0.8490566, b: 0.07609467, a: 1}
-  defaultColor: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 1}
+  highLightColor: {r: 0.7075472, g: 0.7075472, b: 0.7075472, a: 1}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
   selectedColor: {r: 0, g: 0.7328501, b: 1, a: 1}

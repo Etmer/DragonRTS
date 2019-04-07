@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d31ed2dd475ed7047ad7419b680d2a26, type: 3}
   m_Name: CenterTile
   m_EditorClassIdentifier: 
-  _tileDefaultMesh: {fileID: 4300000, guid: 235e58ee036c02644ad9026b04815e23, type: 3}
+  _tileDefaultMesh: {fileID: 4300000, guid: 5524ba0131c1d9b46bdc7635d24f8bc8, type: 3}

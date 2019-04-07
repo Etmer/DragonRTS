@@ -5,8 +5,9 @@ using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
 {
-    
-    [SerializeField] private TileContainer _tileContainer;
+
+    [SerializeField] private  TileContainer _tileContainerData;
+    [SerializeField] private static TileContainer _tileContainer;
     [SerializeField] private GameObject _groundTile;
     [SerializeField] private GameObject _midTile;
     [SerializeField] private GameObject _highTile;
@@ -28,6 +29,7 @@ public class MapGenerator : MonoBehaviour
 
     private void Start()
     {
+        _tileContainer = _tileContainerData;
         min = CalculateWorldPosition(Vector3.zero);
         max = CalculateWorldPosition(new Vector3(Screen.width, Screen.height, 0));
 
@@ -120,5 +122,5 @@ public class MapGenerator : MonoBehaviour
         return ScreenRect.Contains(screenPos);
     }
 
-  
+    public static TileData DefaultTile { get { return _tileContainer.Layer(0); } }
 }

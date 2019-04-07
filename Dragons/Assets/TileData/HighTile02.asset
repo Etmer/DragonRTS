@@ -10,6 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d31ed2dd475ed7047ad7419b680d2a26, type: 3}
-  m_Name: HighData02
+  m_Name: HighTile02
   m_EditorClassIdentifier: 
-  _tileDefaultMesh: {fileID: 4300002, guid: 362a89ae88a711641b015c62566055e8, type: 3}
+  _tileDefaultMesh: {fileID: 4300000, guid: 95dc5d11ef2b6684293effae2ddd1772, type: 3}

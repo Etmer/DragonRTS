@@ -33,7 +33,7 @@ public class HexTile
         _material = _renderer.material;
         _highlightedPosition = _defaultPosition + Vector3.up * 0.1f;
         _colorCoding = tile._colorCoding;
-        highestPoint = _defaultPosition + Vector3.up * (data.meshSizeY);
+        highestPoint = _defaultPosition + Vector3.up * (data.meshSizeY - MapGenerator.DefaultTile.meshSizeY/2);
     }
 
     public  HexTile(GameObject worldObject, HexPoint point, TileData data)
@@ -47,7 +47,7 @@ public class HexTile
         _renderer = worldObject.GetComponentInChildren<MeshRenderer>();
         _material = _renderer.material;
         _highlightedPosition = _defaultPosition + Vector3.up * 0.1f;
-        highestPoint = _defaultPosition + Vector3.up * (data.meshSizeY);
+        highestPoint = _defaultPosition + Vector3.up * (data.meshSizeY - MapGenerator.DefaultTile.meshSizeY/2);
     }
 
     public void Highlight(bool state)
