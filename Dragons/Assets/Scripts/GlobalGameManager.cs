@@ -8,8 +8,11 @@ public class GlobalGameManager : MonoBehaviour
 
     private DataModel _model;
 
-    public Dictionary<HexPoint, HexTile> Map { get { return _model.map; } }
-   
+    [SerializeField] private InputManager _inputManager;
+
+    [SerializeField] private UnitManager _unitManager;
+    [SerializeField] private UIManager _uiManager;
+
     private void Awake()
     {
         if (instance == null)
@@ -23,4 +26,15 @@ public class GlobalGameManager : MonoBehaviour
             Destroy(this);
         }
     }
+
+    private void Update()
+    {
+        Vector2 mousePosition = _inputManager.GetMousePosition();
+
+        if (_uiManager.PointInRect(mousePosition))
+        {
+            _inputManager.Process();
+        }
+    }
+    public Dictionary<HexPoint, HexTile> Map { get { return _model.map; } }
 }

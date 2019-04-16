@@ -27,7 +27,7 @@ public enum InputState
     Selected,
 }
 
-public enum WorldLayer
+public enum TileHeight
 {
     zero,
     one, 

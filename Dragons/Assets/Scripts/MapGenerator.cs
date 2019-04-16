@@ -33,7 +33,7 @@ public class MapGenerator : MonoBehaviour
         min = CalculateWorldPosition(Vector3.zero);
         max = CalculateWorldPosition(new Vector3(Screen.width, Screen.height, 0));
 
-        CoordinateSystem.width = _tileContainer.Layer(WorldLayer.zero).meshSizeX;
+        CoordinateSystem.width = _tileContainer.Layer(TileHeight.zero).meshSizeX;
         HexPoint start = CoordinateSystem.pixel_to_flat_hex(Vector3.zero, out start);
         CreateMap(start, _mapRadius);
         CoordinateSystem.isInitialized = true;
@@ -66,39 +66,12 @@ public class MapGenerator : MonoBehaviour
         int currentProbability = Random.Range(0, 100);
         HexTile tile = null;
         TileData data = null;
-        if ( _probability > currentProbability)
-        {
-            if (_probability > 20)
-            {
-                _tile = Instantiate(_highTile, Vector3.zero, Quaternion.identity);
-                _tile.transform.position = CoordinateSystem.HexPointToWorldCoordinate(hPoint);
-                data = _tileContainer.Layer(WorldLayer.two);
-                tile = new IslandTile(_tile, hPoint, data);
-                tile._colorCoding = _tileFactory.defaultIslandTile._colorCoding;
-                GlobalGameManager.instance.Map.Add(hPoint, tile);
-            }
-            else
-            {
-                _tile = Instantiate(_midTile, Vector3.zero, Quaternion.identity);
-                _tile.transform.position = CoordinateSystem.HexPointToWorldCoordinate(hPoint);
-                data = _tileContainer.Layer(WorldLayer.one);
-                tile = new IslandTile(_tile, hPoint, data);
-                tile._colorCoding = _tileFactory.defaultIslandTile._colorCoding;
-                GlobalGameManager.instance.Map.Add(hPoint, tile);
-            }
-            _probability = 5;
-
-        }
-        else
-        {
-            _probability += 1;
-            _tile = Instantiate(_groundTile, Vector3.zero, Quaternion.identity);
-            _tile.transform.position = CoordinateSystem.HexPointToWorldCoordinate(hPoint);
-            data = _tileContainer.Layer(WorldLayer.zero);
-            tile = new WaterTile(_tile, hPoint, data);
-            tile._colorCoding = _tileFactory.defaultWaterTile._colorCoding;
-            GlobalGameManager.instance.Map.Add(hPoint, tile);
-        }
+        _tile = Instantiate(_groundTile, Vector3.zero, Quaternion.identity);
+        _tile.transform.position = CoordinateSystem.HexPointToWorldCoordinate(hPoint);
+        data = _tileContainer.Layer(TileHeight.zero);
+        tile = new WaterTile(_tile, hPoint, data);
+        tile._colorCoding = _tileFactory.defaultWaterTile._colorCoding;
+        GlobalGameManager.instance.Map.Add(hPoint, tile);
 
         return _tile.transform;
     }

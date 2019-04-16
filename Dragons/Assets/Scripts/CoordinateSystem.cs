@@ -28,6 +28,7 @@ public class CoordinateSystem
         float z = (width / 2f) * (Mathf.Sqrt(3) / 2 * hPoint.q + Mathf.Sqrt(3) * hPoint.r);
         return new Vector3(x, 0, -z); ;
     }
+
     public static Vector2 HexPointToScreenPixel(HexPoint hPoint, out Vector2 output)
     {
         output.x = (width / 2f) * ((3.0f / 2) * hPoint.q);

@@ -11,6 +11,7 @@ public enum TestState
 
 public class InputManager : MonoBehaviour
 {
+    [SerializeField] private EffectManager _effectManager;
     public TileData midData;
     public TileData highData;
     TestState state;
@@ -24,59 +25,43 @@ public class InputManager : MonoBehaviour
     [SerializeField] private Camera _cam;
     [SerializeField] private Transform _camHolder;
     private HexPoint[] _currentLine = new HexPoint[0];
-
-    [SerializeField] private UnitManager _unitManager;
-    private bool _selected;
-
+    
     private void Start()
     {
         _currentHexPoint = new HexPoint(0, 0);
         _currentHexTile = null;
         state = TestState.uno;
-
     }
 
-    void Update()
+    public void Process()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            state = TestState.tres;
-        }
         MoveCamera();
         ChangeCameraHeight();
         ConvertWorldPositionToHexPosition();
         ProcessMouseEvents();
-
         ProcessState(state, _currentHexPoint);
+    }
+    public Vector2 GetMousePosition()
+    {
+        _mousePosition.x = Input.mousePosition.x;
+        _mousePosition.y = Input.mousePosition.y;
+        _mousePosition.z = 10;
+        return _mousePosition;
     }
 
     private void ConvertWorldPositionToHexPosition()
     {
-        Vector3 worlPos = CalculateWorldPosition(CoordinateSystem.layer);
+        Vector3 worlPos = CalculateWorldPosition();
 
         _currentHexPoint = GetCurrentHexPoint(worlPos);
     }
 
-    private Vector3 CalculateWorldPosition(int i)
+    private Vector3 CalculateWorldPosition()
     {
         Vector3 Offset = Vector3.up;
-        _mousePosition.x = Input.mousePosition.x;
-        _mousePosition.y = Input.mousePosition.y;
-        _mousePosition.z = 10;
-        if (i == 0)
-        {
-            Offset = Vector3.up * i;
-        }
-        else if (i == 1)
-        {
-            Offset = Vector3.up * midData.meshSizeY * 100;
-        }
-        else if (i == 2)
-        {
-            Offset = Vector3.up * highData.meshSizeY * 100;
-        }
+        
         Ray ray = Camera.main.ScreenPointToRay(_mousePosition);
-        float delta = ray.origin.y - (Vector3.zero + Offset).y;
+        float delta = ray.origin.y - Vector3.zero.y;
 
         Vector3 dirNorm = ray.direction / ray.direction.y;
         Vector3 IntersectionPos = ray.origin - dirNorm * delta;
@@ -117,16 +102,6 @@ public class InputManager : MonoBehaviour
                 HexDrawTools.CreateRange(newPoint, 5,ref _currentLine);
                 break;
             case TestState.tres:
-                if (!_selected)
-                {
-                    HexDrawTools.DeleteLine(ref _currentLine);
-                    HexDrawTools.DrawLine(_currentSelectedHexPoint, newPoint, ref _currentLine);
-                }
-                if (Input.GetMouseButtonDown(0))
-                {
-                    _selected = true;
-                    _unitManager.MoveUnit(null, _currentLine);
-                }
                 break;
         }
     }
@@ -175,7 +150,8 @@ public class InputManager : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            _testTransform.position = _currentHexTile.highestPoint;
+            HexDrawTools.CreateRange(_currentHexPoint, 1, ref _currentLine);
+            _effectManager.FlipRange(_currentLine);
         }
         if (Input.GetMouseButtonDown(2))
         {

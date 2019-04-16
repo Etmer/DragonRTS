@@ -61,6 +61,7 @@ public class HexTile
             ChangeState(HexStates.Idle);
         }
     }
+
     public void Select(bool state)
     {
         if (state)
@@ -161,5 +162,25 @@ public class HexTile
     }
 
     public HexStates CurrentState { get { return _currentState; } }
+
+    public void Levitate(int index, Mesh newMesh)
+    {
+        _worldtransform.position = _defaultPosition + Vector3.up * index * 0.15f;
+
+        if (index == 0)
+        {
+            _worldtransform.gameObject.GetComponent<MeshFilter>().mesh = newMesh;
+        }
+    }
+
+    public void OnExit()
+    {
+
+    }
+
+    public void OnEnter()
+    {
+
+    }
 
 }

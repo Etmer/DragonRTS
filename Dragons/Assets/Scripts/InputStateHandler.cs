@@ -16,6 +16,7 @@ public class HexDrawTools
             }
         }
     }
+
     public static void DeleteLine(ref HexPoint[] line)
     {
         foreach (HexPoint p in line)
@@ -38,6 +39,7 @@ public class HexDrawTools
             }
         }
     }
+
     public static void DeleteRange(ref HexPoint[] range)
     {
         foreach (HexPoint p in range)

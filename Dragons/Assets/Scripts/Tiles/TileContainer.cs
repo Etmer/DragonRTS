@@ -11,19 +11,19 @@ public class TileContainer : ScriptableObject
     [SerializeField] private TileData _layer03;
     [SerializeField] private TileData _layer04;
 
-    public TileData Layer(WorldLayer layer)
+    public TileData Layer(TileHeight layer)
     {
         switch (layer)
         {
-            case WorldLayer.zero:
+            case TileHeight.zero:
                 return _layer00;
-            case WorldLayer.one:
+            case TileHeight.one:
                 return _layer01;
-            case WorldLayer.two:
+            case TileHeight.two:
                 return _layer02;
-            case WorldLayer.three:
+            case TileHeight.three:
                 return _layer03;
-            case WorldLayer.four:
+            case TileHeight.four:
                 return _layer04;
             default:
                 throw new System.Exception();
