@@ -4,9 +4,9 @@ using UnityEngine;
 
 public enum TestState
 {
-    uno,
-    dos,
-    tres
+    free,
+    building,
+    other
 }
 
 public class InputManager : MonoBehaviour
@@ -30,7 +30,7 @@ public class InputManager : MonoBehaviour
     {
         _currentHexPoint = new HexPoint(0, 0);
         _currentHexTile = null;
-        state = TestState.uno;
+        state = TestState.free;
     }
 
     public void Process()
@@ -38,7 +38,7 @@ public class InputManager : MonoBehaviour
         MoveCamera();
         ChangeCameraHeight();
         ConvertWorldPositionToHexPosition();
-        ProcessMouseEvents();
+        //ProcessMouseEvents();
         ProcessState(state, _currentHexPoint);
     }
     public Vector2 GetMousePosition()
@@ -83,7 +83,7 @@ public class InputManager : MonoBehaviour
     {
         switch (state)
         {
-            case TestState.uno:
+            case TestState.free:
                 if (_lastHexTile != _currentHexTile)
                 {
                     if (_lastHexTile != null)
@@ -96,12 +96,15 @@ public class InputManager : MonoBehaviour
                     }
                     _lastHexTile = _currentHexTile;
                 }
+                if (Input.GetMouseButtonDown(0))
+                {
+                    GlobalGameManager.instance.GlobalUIManager.SetInfoBox("Hello, I am an Info Box", _currentHexTile.highestPoint);
+                    Debug.Log("clicked");
+                }
                 break;
-            case TestState.dos:
-                HexDrawTools.DeleteRange(ref _currentLine);
-                HexDrawTools.CreateRange(newPoint, 5,ref _currentLine);
+            case TestState.building:
                 break;
-            case TestState.tres:
+            case TestState.other:
                 break;
         }
     }

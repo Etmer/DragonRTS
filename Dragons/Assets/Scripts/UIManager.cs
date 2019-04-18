@@ -12,6 +12,10 @@ public class UIManager : MonoBehaviour
 
     public Texture text;
 
+    [Header("UI Info Box")]
+    [SerializeField] private RectTransform _uIInfoBoxRectTransform;
+    [SerializeField] private Text _uIInfoBoxContent;
+
     public bool PointInRect(Vector2 point)
     {
         GetRect(_interactableRect, ref rect);
@@ -31,4 +35,9 @@ public class UIManager : MonoBehaviour
         output.Set(X,Y, input.rect.width, input.rect.height);
     }
 
+    public void SetInfoBox(string content, Vector3 position)
+    {
+        _uIInfoBoxRectTransform.position = Camera.main.WorldToScreenPoint(position);
+        _uIInfoBoxContent.text = content;
+    }
 }

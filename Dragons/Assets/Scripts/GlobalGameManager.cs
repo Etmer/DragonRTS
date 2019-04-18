@@ -36,5 +36,8 @@ public class GlobalGameManager : MonoBehaviour
             _inputManager.Process();
         }
     }
+
     public Dictionary<HexPoint, HexTile> Map { get { return _model.map; } }
+    public UIManager GlobalUIManager { get { return _uiManager; } }
+    public UnitManager GlobalUnitManager { get { return _unitManager; } }
 }

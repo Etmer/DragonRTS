@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce4973daa25be654583896f8a2a08ec3, type: 3}
-  m_Name: TileContainer
+  m_Name: MeshData
   m_EditorClassIdentifier: 
   _layer00: {fileID: 11400000, guid: 62012fa4466612e4fb5e7248ce3512b6, type: 2}
   _layer01: {fileID: 11400000, guid: 6a3489aa4e5af804abfc755bd67c9c95, type: 2}
